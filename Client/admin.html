@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MikiClock Admin Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Chart.js for graphs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+     <!-- Email.js for emails -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <script type="text/javascript">
+        window.tailwind.config = {
+            darkMode: ['class'],
+            theme: {
+                extend: {
+                    colors: {
+                        border: 'hsl(var(--border))',
+                        input: 'hsl(var(--input))',
+                        ring: 'hsl(var(--ring))',
+                        background: 'hsl(var(--background))',
+                        foreground: 'hsl(var(--foreground))',
+                        primary: {
+                            DEFAULT: 'hsl(var(--primary))',
+                            foreground: 'hsl(var(--primary-foreground))'
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(var(--secondary))',
+                            foreground: 'hsl(var(--secondary-foreground))'
+                        },
+                        destructive: {
+                            DEFAULT: 'hsl(var(--destructive))',
+                            foreground: 'hsl(var(--destructive-foreground))'
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(var(--muted))',
+                            foreground: 'hsl(var(--muted-foreground))'
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(var(--accent))',
+                            foreground: 'hsl(var(--accent-foreground))'
+                        },
+                        popover: {
+                            DEFAULT: 'hsl(var(--popover))',
+                            foreground: 'hsl(var(--popover-foreground))'
+                        },
+                        card: {
+                            DEFAULT: 'hsl(var(--card))',
+                            foreground: 'hsl(var(--card-foreground))'
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --background: 0 0% 100%;
+                --foreground: 224 71.4% 4.1%;
+                --card: 0 0% 100%;
+                --card-foreground: 224 71.4% 4.1%;
+                --popover: 0 0% 100%;
+                --popover-foreground: 224 71.4% 4.1%;
+                --primary: 220.9 39.3% 11%;
+                --primary-foreground: 210 20% 98%;
+                --secondary: 220 14.3% 95.9%;
+                --secondary-foreground: 220.9 39.3% 11%;
+                --muted: 220 14.3% 95.9%;
+                --muted-foreground: 220 8.9% 46.1%;
+                --accent: 220 14.3% 95.9%;
+                --accent-foreground: 220.9 39.3% 11%;
+                --destructive: 0 84.2% 60.2%;
+                --destructive-foreground: 210 20% 98%;
+                --border: 220 13% 91%;
+                --input: 220 13% 91%;
+                --ring: 224 71.4% 4.1%;
+                --radius: 0.35rem;
+            }
+            .dark {
+                --background: 224 71.4% 4.1%;
+                --foreground: 210 20% 98%;
+                --card: 224 71.4% 4.1%;
+                --card-foreground: 210 20% 98%;
+                --popover: 224 71.4% 4.1%;
+                --popover-foreground: 210 20% 98%;
+                --primary: 210 20% 98%;
+                --primary-foreground: 220.9 39.3% 11%;
+                --secondary: 215 27.9% 16.9%;
+                --secondary-foreground: 210 20% 98%;
+                --muted: 215 27.9% 16.9%;
+                --muted-foreground: 217.9 10.6% 64.9%;
+                --accent: 215 27.9% 16.9%;
+                --accent-foreground: 210 20% 98%;
+                --destructive: 0 62.8% 30.6%;
+                --destructive-foreground: 210 20% 98%;
+                --border: 215 27.9% 16.9%;
+                --input: 215 27.9% 16.9%;
+                --ring: 216 12.2% 83.9%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex flex-col md:flex-row min-h-screen" role="application">
+        <!-- Sidebar - Hidden on mobile, shown on tablet/desktop -->
+        <aside class="bg-blue-900 text-white w-full md:w-64 md:flex-shrink-0 md:block hidden" id="sidebar" role="navigation" aria-label="Main navigation">
+            <div class="p-4">
+                <h2 class="text-2xl font-bold mb-8" id="nav-title">MikiClock</h2>
+                <nav aria-labelledby="nav-title">
+                    <ul role="menu">
+                         <li class="mb-2">
+                            <a href="#" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                               <i class="fas fa-home mr-3"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        <li class="mb-2" role="none">
+                            <a href="dashboard.html" class="flex items-center p-3 rounded-md hover:bg-blue-700" role="menuitem">
+                                <i class="fas fa-tachometer-alt mr-3" aria-hidden="true"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="mb-2" role="none">
+                            <a href="#" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700" role="menuitem" aria-current="page">
+                                <i class="fas fa-users-cog mr-3" aria-hidden="true"></i>
+                                <span>Admin Panel</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="timehistory.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                <i class="fas fa-history mr-3"></i>
+                                <span>Time History</span>
+                            </a>
+                        </li>
+                         <li class="mb-2">
+                                <a href="forum.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-cog mr-3"></i>
+                                    <span>Forum</span>
+                                </a>
+                            </li>
+                        <li class="mb-2">
+                            <a href="settings.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                <i class="fas fa-cog mr-3"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="mt-auto p-4 border-t border-blue-800">
+                <a href="form.html" id="logout-link" class="flex items-center p-2 rounded-md hover:bg-blue-700">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1" role="main">
+            <!-- Mobile Top Bar -->
+            <header class="bg-blue-900 text-white p-4 flex justify-between items-center md:hidden" role="banner">
+                <h2 class="text-xl font-bold">MikiClock Admin</h2>
+                <button id="menuToggle" class="text-white focus:outline-none" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileSidebar">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            <!-- Mobile Sidebar (Hidden by default) -->
+            <nav class="bg-blue-900 text-white w-full hidden" id="mobileSidebar" role="navigation" aria-label="Mobile navigation">
+                <div class="p-4">
+                    <nav>
+                        <ul>
+                             <li class="mb-2">
+                            <a href="#" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                               <i class="fas fa-home mr-3"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                            <li class="mb-2">
+                                <a href="dashboard.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-tachometer-alt mr-3"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                                    <i class="fas fa-users-cog mr-3"></i>
+                                    <span>Admin Panel</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="timehistory.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-history mr-3"></i>
+                                    <span>Time History</span>
+                                </a>
+                            </li>
+                           <li class="mb-2">
+                                <a href="forum.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-cog mr-3"></i>
+                                    <span>Forum</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="settings.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-cog mr-3"></i>
+                                    <span>Settings</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="#" id="mobile-logout-link" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-sign-out-alt mr-3"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <div class="p-4 md:p-8">
+                <!-- Header with Current Time -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-800 mb-2 md:mb-0">Admin Dashboard</h1>
+                    <div class="text-lg font-semibold" id="currentTime" role="timer" aria-live="polite">
+                        <span id="currentDate"></span> | <span id="clock"></span>
+                    </div>
+                </div>
+
+                <!-- Admin Quick Stats -->
+                <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6" aria-label="Dashboard Statistics">
+                    <div class="bg-white rounded-lg shadow-md p-4" role="region" aria-label="Total Employees">
+                        <div class="flex items-center">
+                            <div class="bg-blue-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-users text-blue-800 text-xl" aria-hidden="true"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">Total Employees</p>
+                                <h3 class="text-xl font-bold" id="totalEmployees" aria-live="polite">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-4">
+                        <div class="flex items-center">
+                            <div class="bg-green-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-user-check text-green-800 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">Currently Active</p>
+                                <h3 class="text-xl font-bold" id="activeEmployees">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-4">
+                        <div class="flex items-center">
+                            <div class="bg-yellow-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-clock text-yellow-800 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">Today's Clock-ins</p>
+                                <h3 class="text-xl font-bold" id="todayClockIns">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-4">
+                        <div class="flex items-center">
+                            <div class="bg-red-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-user-times text-red-800 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">Absence Today</p>
+                                <h3 class="text-xl font-bold" id="absentToday">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tabs for different admin sections -->
+                <div class="mb-6">
+                    <div class="border-b border-gray-200">
+                        <nav class="flex -mb-px" role="tablist" aria-label="Admin sections">
+                            <button class="tab-btn py-4 px-6 border-b-2 border-blue-500 text-blue-600 font-medium text-sm leading-5 focus:outline-none focus:border-blue-700 focus:text-blue-800" 
+                                    role="tab" 
+                                    aria-selected="true" 
+                                    aria-controls="live-activity" 
+                                    id="tab-live-activity"
+                                    data-tab="live-activity">
+                                Live Activity
+                            </button>
+                            <button class="tab-btn py-4 px-6 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300" data-tab="employee-management">
+                                Employee Management
+                            </button>
+                          
+                           
+                        </nav>
+                    </div>
+                </div>
+                
+                <!-- Tab Content -->
+                <div class="tab-content" 
+                     id="live-activity" 
+                     role="tabpanel" 
+                     aria-labelledby="tab-live-activity">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold">Live Employee Activity</h2>
+                            <button id="refreshActivityBtn" class="bg-blue-100 text-blue-800 px-4 py-2 rounded-md hover:bg-blue-200 transition">
+                                <i class="fas fa-sync-alt mr-2"></i> Refresh
+                            </button>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white" role="grid" aria-label="Employee activity">
+                                <thead>
+                                    <tr class="bg-gray-100 text-gray-600 text-left" role="row">
+                                        <th class="py-3 px-4 font-semibold" role="columnheader" scope="col">Employee</th>
+                                        <th class="py-3 px-4 font-semibold" role="columnheader" scope="col">ID</th>
+                                        <th class="py-3 px-4 font-semibold" role="columnheader" scope="col">Position</th>
+                                        <th class="py-3 px-4 font-semibold" role="columnheader" scope="col">Status</th>
+                                        <th class="py-3 px-4 font-semibold" role="columnheader" scope="col">Clock In</th>
+                                        <th class="py-3 px-4 font-semibold" role="columnheader" scope="col">Duration</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="liveActivityTable">
+                                    <!-- Will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content hidden" id="employee-management">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Employee List -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h2 class="text-xl font-bold">Employee Directory</h2>
+                                    <div class="flex">
+                                        <div class="relative mr-2">
+                                            <input type="text" id="employeeSearch" placeholder="Search employees..." class="border border-gray-300 rounded-md px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <div class="absolute left-3 top-2.5 text-gray-400">
+                                                <i class="fas fa-search"></i>
+                                            </div>
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+                                
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-white">
+                                        <thead>
+                                            <tr class="bg-gray-100 text-gray-600 text-left">
+                                                <th class="py-3 px-4 font-semibold">Name</th>
+                                                <th class="py-3 px-4 font-semibold">Employee ID</th>
+                                                <th class="py-3 px-4 font-semibold">Position</th>
+                                                <th class="py-3 px-4 font-semibold">Email</th>
+                                                <th class="py-3 px-4 font-semibold">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="employeeDirectoryTable">
+                                            <!-- Will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Employee quick edit -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-white rounded-lg shadow-md p-6 mb-6" id="employeeEditPanel">
+                                <h2 class="text-xl font-bold mb-4">Edit Employee</h2>
+                                <p class="text-gray-500 mb-4">Select an employee from the list to edit their details.</p>
+                                
+                                <form id="employeeEditForm" class="hidden">
+                                    <input type="hidden" id="editEmployeeId">
+                                    
+                                    <div class="mb-4">
+                                        <label for="editName" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+                                        <input type="text" id="editName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label for="editEmployeeID" class="block text-gray-700 text-sm font-bold mb-2">Employee ID</label>
+                                        <input type="text" id="editEmployeeID" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label for="editPosition" class="block text-gray-700 text-sm font-bold mb-2">Position</label>
+                                        <select id="editPosition" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                            <option value="Manager">Manager</option>
+                                            <option value="Supervisor">Supervisor</option>
+                                            <option value="Employee">Employee</option>
+                                            <option value="Intern">Intern</option>
+                                            <option value="Admin">Admin</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label for="editEmail" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                                        <input type="email" id="editEmail" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    
+                                    <div class="flex justify-between">
+                                        <button onclick="saveEmployeeChanges()" type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                                            <i class="fas fa-save mr-2"></i> Save Changes
+                                        </button>
+                                        <button onclick="cancelEdit()" type="button" id="cancelEditBtn" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400 transition">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                         
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full bg-white">
+                                        <thead>
+                                           
+                                        </thead>
+                                        <tbody id="analyticsTable">
+                                            <!-- Will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Employee Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" 
+         id="addEmployeeModal" 
+         role="dialog" 
+         aria-labelledby="modalTitle" 
+         aria-modal="true">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md" role="document">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="modalTitle" class="text-xl font-bold">Add New Employee</h2>
+                    <button id="closeAddEmployeeModal" 
+                            class="text-gray-500 hover:text-gray-700" 
+                            aria-label="Close modal">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <!-- ... rest of modal content ... -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+     <script src="search.js"></script>
+    <script>
+       document.addEventListener('DOMContentLoaded', function() {
+    // Function to update all admin dashboard stats
+    function updateAdminStats() {
+        // Get all users
+        const users = getUsers();
+        document.getElementById('totalEmployees').textContent = users.length;
+
+        // Get all clock records
+        const clockRecords = JSON.parse(localStorage.getItem('clockRecords')) || [];
+        const today = new Date().toLocaleDateString('en-US');
+
+        // Count today's clock-ins
+        const todayClockIns = clockRecords.filter(record => 
+            new Date(record.date).toLocaleDateString('en-US') === today
+        ).length;
+        document.getElementById('todayClockIns').textContent = todayClockIns;
+
+        // Count currently active (clocked in but not out)
+        const activeEmployees = clockRecords.filter(record => 
+            new Date(record.date).toLocaleDateString('en-US') === today && 
+            record.clockIn && 
+            !record.clockOut
+        ).length;
+        document.getElementById('activeEmployees').textContent = activeEmployees;
+
+        // Calculate absences (employees who haven't clocked in today)
+        const absentToday = users.length - todayClockIns;
+        document.getElementById('absentToday').textContent = absentToday;
+    }
+
+    // Update stats initially
+    updateAdminStats();
+
+    // Update stats every minute
+    setInterval(updateAdminStats, 60000);
+
+    // Listen for clock events from other pages
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'clockRecords') {
+            updateAdminStats();
+        }
+    });
+
+    // Toggle mobile menu
+    document.getElementById('menuToggle').addEventListener('click', function() {
+        const mobileSidebar = document.getElementById('mobileSidebar');
+        mobileSidebar.classList.toggle('hidden');
+    });
+
+    // Tab switching functionality
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.getAttribute('data-tab');
+
+            // Update active tab button
+            tabButtons.forEach(btn => {
+                btn.classList.remove('border-blue-500', 'text-blue-600');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            button.classList.add('border-blue-500', 'text-blue-600');
+            button.classList.remove('border-transparent', 'text-gray-500');
+            
+            // Show selected tab content
+            tabContents.forEach(content => { 
+                content.classList.add('hidden');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+        });
+    });
+
+    // Update current time and date
+    function updateClock() {
+        const now = new Date();
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        
+        document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', dateOptions);
+        document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', timeOptions);
+    }
+
+    // Update clock every second
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Initialize tables
+    populateLiveActivity();
+    populateEmployeeDirectory();
+});
+
+// Get users from localStorage (your actual registered users)
+function getUsers() {
+    return JSON.parse(localStorage.getItem('users')) || [];
+}
+
+// Save users back to localStorage
+function saveUsers(users) {
+    localStorage.setItem('users', JSON.stringify(users));
+}
+
+// Convert users to employee format for display
+function convertUsersToEmployees(users) {
+    return users.map((user, index) => ({
+        id: index + 1,
+        name: user.name,
+        employeeId: user.employeeId || `EMP${String(index + 1).padStart(3, '0')}`,
+        position: user.position || 'Employee',
+        email: user.email || `${user.name.toLowerCase().replace(/\s+/g, '')}@company.com`,
+        status: user.status || 'inactive',
+        clockIn: user.clockIn || 'Not clocked in',
+        duration: user.duration || '0h 0m',
+        password: user.password // Keep the hashed password
+    }));
+}
+
+// Get current employees (converted from users)
+function getEmployees() {
+    const users = getUsers();
+    return convertUsersToEmployees(users);
+}
+
+function populateLiveActivity() {
+    const users = getUsers();
+    const clockRecords = JSON.parse(localStorage.getItem('clockRecords')) || [];
+    const today = new Date().toLocaleDateString('en-US');
+    const tableBody = document.getElementById('liveActivityTable');
+    tableBody.innerHTML = '';
+    
+    users.forEach((user, index) => {
+        // Find today's clock records for this user
+        const userTodayRecords = clockRecords.filter(record => 
+            record.employeeId === (user.employeeId || `EMP${String(index + 1).padStart(3, '0')}`) &&
+            new Date(record.date).toLocaleDateString('en-US') === today
+        );
+        
+        // Find active session (clocked in but not out)
+        const activeSession = userTodayRecords.find(record => 
+            record.clockIn && !record.clockOut
+        );
+        
+        // Determine current status
+        let status = 'inactive';
+        let clockInTime = 'Not clocked in';
+        let duration = '0h 0m';
+        
+        if (activeSession) {
+            status = 'active';
+            const clockInDate = new Date(activeSession.clockIn);
+            clockInTime = formatTime(clockInDate);
+            duration = calculateDuration(activeSession.clockIn, new Date());
+        } else {
+            // Check if user clocked out today
+            const lastCompletedSession = userTodayRecords
+                .filter(record => record.clockIn && record.clockOut)
+                .sort((a, b) => new Date(b.clockOut) - new Date(a.clockOut))[0];
+            
+            if (lastCompletedSession) {
+                const clockOutDate = new Date(lastCompletedSession.clockOut);
+                clockInTime = `Clocked out at ${formatTime(clockOutDate)}`;
+                duration = calculateDuration(lastCompletedSession.clockIn, lastCompletedSession.clockOut);
+            }
+        }
+        
+        const row = document.createElement('tr');
+        row.className = 'border-b border-gray-200 hover:bg-gray-50';
+        
+        let statusBadge = '';
+        if (status === 'active') {
+            statusBadge = '<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Active</span>';
+        } else {
+            statusBadge = '<span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">Inactive</span>';
+        }
+        
+        row.innerHTML = `
+            <td class="py-3 px-4">${user.name}</td>
+            <td class="py-3 px-4">${user.employeeId || `EMP${String(index + 1).padStart(3, '0')}`}</td>
+            <td class="py-3 px-4">${user.position || 'Not Specified'}</td>
+            <td class="py-3 px-4">${statusBadge}</td>
+            <td class="py-3 px-4">${clockInTime}</td>
+            <td class="py-3 px-4">${duration}</td>
+            <td class="py-3 px-4">
+              
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+}
+
+function formatTime(date) {
+    if (!date) return '--:-- --';
+    
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 || 12;
+    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+    
+    return `${formattedHours}:${formattedMinutes} ${ampm}`;
+}
+
+function calculateDuration(startTime, endTime) {
+    if (!startTime || !endTime) return '0h 0m';
+    
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const diffMs = end - start;
+    
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return `${hours}h ${minutes}m`; 
+}
+
+// Populate employee directory
+function populateEmployeeDirectory() {
+    const employees = getEmployees();
+    const tableBody = document.getElementById('employeeDirectoryTable');
+    tableBody.innerHTML = '';
+    
+    employees.forEach(employee => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-gray-200 hover:bg-gray-50';
+        
+        row.innerHTML = `
+            <td class="py-3 px-4">${employee.name}</td>
+            <td class="py-3 px-4">${employee.employeeId}</td>
+            <td class="py-3 px-4">${employee.position}</td>
+            <td class="py-3 px-4">${employee.email}</td>
+            <td class="py-3 px-4">
+                <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="editEmployee(${employee.id})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="text-red-600 hover:text-red-800" onclick="deleteEmployee(${employee.id})">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+}
+
+// Edit employee function - FIXED VERSION
+function editEmployee(id) {
+    const users = getUsers();
+    const userIndex = id - 1; // Convert to array index
+    const user = users[userIndex];
+    
+    if (!user) return;
+    
+    // Store original email for reference
+    const originalEmail = user.email;
+    
+    document.getElementById('editEmployeeId').value = id;
+    document.getElementById('editName').value = user.name;
+    document.getElementById('editEmployeeID').value = user.employeeId || `EMP${String(id).padStart(3, '0')}`;
+    document.getElementById('editPosition').value = user.position || 'Employee';
+    document.getElementById('editEmail').value = user.email || `${user.name.toLowerCase().replace(/\s+/g, '')}@company.com`;
+    
+    // Store original email as a data attribute for reference
+    document.getElementById('editEmail').setAttribute('data-original-email', originalEmail);
+    
+    document.getElementById('employeeEditForm').classList.remove('hidden');
+    document.querySelector('#employeeEditPanel p').classList.add('hidden');
+    
+    // Scroll to the edit panel
+    document.getElementById('employeeEditPanel').scrollIntoView({ behavior: 'smooth' });
+}
+
+
+function deleteEmployee(id) {
+    const users = getUsers();
+    const userIndex = id - 1;
+    const user = users[userIndex];
+    
+    if (!user) return;
+
+    if (confirm(`Are you sure you want to delete ${user.name}?`)) {
+        // Remove user from users array
+        const updatedUsers = users.filter((_, index) => index !== userIndex);
+        saveUsers(updatedUsers);
+        
+        // Remove related clock records
+        const clockRecords = JSON.parse(localStorage.getItem('clockRecords')) || [];
+        const employeeId = user.employeeId || `EMP${String(id).padStart(3, '0')}`;
+        const updatedClockRecords = clockRecords.filter(record => 
+            record.employeeId !== employeeId && record.email !== user.email
+        );
+        localStorage.setItem('clockRecords', JSON.stringify(updatedClockRecords));
+        
+        // Refresh tables
+        populateLiveActivity();
+        populateEmployeeDirectory();
+        updateAdminStats();
+        
+        alert(`${user.name} has been deleted successfully.`);
+    }
+}
+
+
+
+    </script>
+</body>
+</html>

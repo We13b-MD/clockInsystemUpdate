@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Form</title>
+</head>
+<body>
+    <html>
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+          <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+              <script src="https://unpkg.com/unlazy@0.11.3/dist/unlazy.with-hashing.iife.js" defer init></script>
+              
+              <!-- SweetAlert2 (correct version) -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+              <script type="text/javascript">
+                  window.tailwind.config = {
+                      darkMode: ['class'],
+                      theme: {
+                          extend: {
+                              colors: {
+                                  border: 'hsl(var(--border))',
+                                  input: 'hsl(var(--input))',
+                                  ring: 'hsl(var(--ring))',
+                                  background: 'hsl(var(--background))',
+                                  foreground: 'hsl(var(--foreground))',
+                                  primary: {
+                                      DEFAULT: 'hsl(var(--primary))',
+                                      foreground: 'hsl(var(--primary-foreground))'
+                                  },
+                                  secondary: {
+                                      DEFAULT: 'hsl(var(--secondary))',
+                                      foreground: 'hsl(var(--secondary-foreground))'
+                                  },
+                                  destructive: {
+                                      DEFAULT: 'hsl(var(--destructive))',
+                                      foreground: 'hsl(var(--destructive-foreground))'
+                                  },
+                                  muted: {
+                                      DEFAULT: 'hsl(var(--muted))',
+                                      foreground: 'hsl(var(--muted-foreground))'
+                                  },
+                                  accent: {
+                                      DEFAULT: 'hsl(var(--accent))',
+                                      foreground: 'hsl(var(--accent-foreground))'
+                                  },
+                                  popover: {
+                                      DEFAULT: 'hsl(var(--popover))',
+                                      foreground: 'hsl(var(--popover-foreground))'
+                                  },
+                                  card: {
+                                      DEFAULT: 'hsl(var(--card))',
+                                      foreground: 'hsl(var(--card-foreground))'
+                                  },
+                              },
+                          }
+                      }
+                  }
+              </script>
+              <style type="text/tailwindcss">
+                  @layer base {
+                      :root {
+                          --background: 0 0% 100%;
+      --foreground: 224 71.4% 4.1%;
+      --card: 0 0% 100%;
+      --card-foreground: 224 71.4% 4.1%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 224 71.4% 4.1%;
+      --primary: 220.9 39.3% 11%;
+      --primary-foreground: 210 20% 98%;
+      --secondary: 220 14.3% 95.9%;
+      --secondary-foreground: 220.9 39.3% 11%;
+      --muted: 220 14.3% 95.9%;
+      --muted-foreground: 220 8.9% 46.1%;
+      --accent: 220 14.3% 95.9%;
+      --accent-foreground: 220.9 39.3% 11%;
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 210 20% 98%;
+      --border: 220 13% 91%;
+      --input: 220 13% 91%;
+      --ring: 224 71.4% 4.1%;
+      --radius: 0.35rem;
+                      }
+                      .dark {
+                          --background: 224 71.4% 4.1%;
+      --foreground: 210 20% 98%;
+      --card: 224 71.4% 4.1%;
+      --card-foreground: 210 20% 98%;
+      --popover: 224 71.4% 4.1%;
+      --popover-foreground: 210 20% 98%;
+      --primary: 210 20% 98%;
+      --primary-foreground: 220.9 39.3% 11%;
+      --secondary: 215 27.9% 16.9%;
+      --secondary-foreground: 210 20% 98%;
+      --muted: 215 27.9% 16.9%;
+      --muted-foreground: 217.9 10.6% 64.9%;
+      --accent: 215 27.9% 16.9%;
+      --accent-foreground: 210 20% 98%;
+      --destructive: 0 62.8% 30.6%;
+      --destructive-foreground: 210 20% 98%;
+      --border: 215 27.9% 16.9%;
+      --input: 215 27.9% 16.9%;
+      --ring: 216 12.2% 83.9%;
+                      }
+                  }
+
+                  body{
+                    background-color: #1e40af
+                    ;
+                  }
+
+                  .swal-modal {
+             width:300px;
+             height:300px;
+}
+              </style>
+        </head>
+        <body>
+            <form id="form">
+                <div class="flex justify-center items-center h-screen bg-gradient-to-br from-blue-400 to-blue-600">
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <h2 class="text-2xl font-bold text-center text-blue-800 mb-4">Login</h2>
+                        <form>
+                           <div class="mb-4">
+    <label for="name" class="block text-blue-800">Name</label>
+    <input type="text" id="name" name="name" 
+           placeholder="Enter your name"
+           class="w-full px-3 py-2 border rounded-lg text-blue-800" />
+</div>
+                            <div class="mb-6">
+                                <label for="password" class="block text-blue-800">Password</label>
+                                <input type="password" id="password" name="password" class="w-full px-3 py-2 border rounded-lg text-blue-800" />
+                            </div>
+                            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">Login</button>
+                        </form>
+                        <div class="mt-4 text-center">
+                            <a href="#" onclick="handleForgotPassword()" class="text-blue-600 hover:underline">Forgot Password?</a>
+                            <span class="text-blue-800 mx-2"></span>
+                            <a href="signup.html" class="text-blue-600 hover:underline">Sign Up</a> <br><br>
+                              
+                           
+                        </div>
+                    </div>
+                </div>
+            </form>
+         <script>
+            // First, fix the HTML form with an id and correct the typo in "Password" label
+          // Login Form Event Listener
+
+
+          async function saveUserToSQLite(name, password) {
+    try {
+        const response = await fetch('http://localhost:3000/api/save-user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                password: password
+            })
+        });
+        
+        const result = await response.json();
+        console.log('User saved to SQLite:', result);
+    } catch (error) {
+        console.error('Error saving to SQLite:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('form');
+    
+    if (loginForm) {
+        loginForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            // Get login form values
+            const name = document.getElementById('name').value;
+            const password = document.getElementById('password').value;
+            
+            // Validate input
+            if (!name || !password) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Please enter both name and password",
+                    icon: "error"
+                });
+                return;
+            }
+            
+            // Get users from local storage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            try {
+                // Hash the entered password for comparison
+                const hashedPassword = await hashPassword(password);
+                
+                // Find the user by name and password
+                const user = users.find(u => 
+                    u.name.toLowerCase() === name.toLowerCase() && 
+                    u.password === hashedPassword
+                );
+                
+                if (user) {
+                    // Login successful - store user info in session storage
+                    const sessionId = Date.now().toString();
+                    sessionStorage.setItem(`loggedInUser_${sessionId}`, user.name);
+                    sessionStorage.setItem('loggedInUser', user.name);
+                    sessionStorage.setItem('userPassword', user.password);
+                    sessionStorage.setItem(`loginTime_${user.name}`, new Date().toISOString());
+                    
+                    // Trigger storage event for admin panel
+                    localStorage.setItem('lastLogin', Date.now().toString());
+                    
+                    // Show success message
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Login successful!",
+                        icon: "success"
+                    }).then(() => {
+                        // Redirect to homepage
+                        window.location.href = 'home.html';
+                        saveUserToSQLite(user.name, user.password);
+                    });
+                } else {
+                    // Login failed
+                    Swal.fire({
+                        title: "Login Failed",
+                        text: "Invalid name or password",
+                        icon: "error"
+                    });
+                }
+            } catch (error) {
+                console.error("Error during login:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Login failed. Please try again.",
+                    icon: "error"
+                });
+            }
+        });
+    } else {
+        console.log('Login form not found on this page');
+    }
+});
+
+// Function to hash a password using SHA-256
+async function hashPassword(password) {
+    // Convert the password string to an ArrayBuffer
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    
+    // Generate a salt (for production, store this salt with the user record)
+    // In a real application, each user should have their own unique salt
+    const salt = "YourSecureSalt"; // Consider generating a random salt per user
+    const saltedPassword = password + salt;
+    const saltedData = encoder.encode(saltedPassword);
+    
+    // Hash the salted password
+    const hashBuffer = await crypto.subtle.digest('SHA-256', saltedData);
+    
+    // Convert the hash to a hex string
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    
+    return hashedPassword;
+}
+//sqlite3
+
+
+// Add this function to save user to SQLite
+// Add this function to save user to SQLite
+
+// In your existing login success block, add this line:
+
+
+// Change this line in your existing code:
+
+
+   //forgot password gmail
+
+     // EmailJS Config
+const EMAILJS_CONFIG = {
+    serviceID: 'service_242840j',
+    templateID: 'template_carz7ct', 
+    publicKey: 'W-H-E5IbeFNeBlU71'
+};
+
+emailjs.init(EMAILJS_CONFIG.publicKey);
+
+/*function handleForgotPassword() {
+    Swal.fire({
+        title: 'Reset Password',
+        input: 'email',
+        inputLabel: 'Email Address',
+        inputPlaceholder: 'Enter your registered email',
+        showCancelButton: true,
+        confirmButtonText: 'Send Reset Email',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#6b7280',
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+        preConfirm: async (email) => {
+            try {
+                if (!email) {
+                    throw new Error('Please enter your email address');
+                }
+
+                // Find user
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const user = users.find(u => u.email && u.email.toLowerCase() === email.toLowerCase());
+                
+                if (!user) {
+                    throw new Error('No account found with this email address');
+                }
+
+                // Generate temporary password
+                const tempPassword = Math.random().toString(36).slice(-8) + Math.floor(Math.random() * 100);
+                
+                // Send email via EmailJS using your syntax
+                const result = await emailjs.send("service_242840j", "template_carz7ct", {
+                    user_name: user.name,
+                    new_password: tempPassword,
+                    email: email
+                });
+
+                console.log('Email sent successfully:', result);
+                
+                // Update password only after successful email
+                const userIndex = users.findIndex(u => u.email && u.email.toLowerCase() === email.toLowerCase());
+                users[userIndex].password = tempPassword;
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                return result;
+            } catch (error) {
+                console.error('Email sending error:', error);
+                Swal.showValidationMessage(`Error: ${error.message || 'Failed to send email'}`);
+                return false;
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Password reset email has been sent to your email address.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3b82f6'
+            });
+        }
+    });
+}*/
+
+
+function handleForgotPassword() {
+    Swal.fire({
+        title: 'Reset Password',
+        input: 'email',
+        inputLabel: 'Email Address',
+        inputPlaceholder: 'Enter your registered email',
+        showCancelButton: true,
+        confirmButtonText: 'Send Reset Email',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#6b7280',
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+        preConfirm: async (email) => {
+            try {
+                if (!email) {
+                    throw new Error('Please enter your email address');
+                }
+
+                // Find user
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                //console.log('All users in localStorage:', users); // Debug: see all users
+                //console.log('Looking for email:', email.toLowerCase()); // Debug: see what email we're searching for
+                
+                const user = users.find(u => u.email && u.email.toLowerCase() === email.toLowerCase());
+                
+                if (!user) {
+                    throw new Error('No account found with this email address');
+                }
+
+                //console.log('Found user for password reset:', user); // Debug: see the entire user object
+                //console.log('User name should be:', user.name); // Debug: see the specific name
+
+                // Generate temporary password
+                const tempPassword = Math.random().toString(36).slice(-8) + Math.floor(Math.random() * 100);
+                
+                // Hash the temporary password using the same function as registration/login
+                const hashedTempPassword = await hashPassword(tempPassword);
+                
+                // Send email via EmailJS - make sure to use the correct user data
+                const emailParams = {
+                    to_name: user.name,      // Try to_name instead of user_name
+                    user_name: user.name,    // Keep user_name as backup
+                    new_password: tempPassword,
+                    to_email: email,         // Add to_email
+                    email: email
+                };
+                
+                //console.log('Email parameters being sent:', emailParams); // Debug: see exact params
+
+                const result = await emailjs.send("service_242840j", "template_carz7ct", emailParams);
+
+                //console.log('Email sent successfully:', result);
+                
+                // Update password with HASHED version only after successful email
+                const userIndex = users.findIndex(u => u.email && u.email.toLowerCase() === email.toLowerCase());
+                if (userIndex !== -1) {
+                    users[userIndex].password = hashedTempPassword; // Store hashed password
+                    localStorage.setItem('users', JSON.stringify(users));
+                    console.log('Password updated for user:', users[userIndex].name);
+                }
+                
+                return result;
+            } catch (error) {
+                console.error('Email sending error:', error);
+                Swal.showValidationMessage(`Error: ${error.message || 'Failed to send email'}`);
+                return false;
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Password reset email has been sent to your email address.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3b82f6'
+            });
+        }
+    });
+}
+
+         </script>
+        </body>
+      </html>
+</body>
+</html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Form</title>
+</head>
+<body>
+    <html>
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+              <script src="https://unpkg.com/unlazy@0.11.3/dist/unlazy.with-hashing.iife.js" defer init></script>
+              <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+              <script type="text/javascript">
+                  window.tailwind.config = {
+                      darkMode: ['class'],
+                      theme: {
+                          extend: {
+                              colors: {
+                                  border: 'hsl(var(--border))',
+                                  input: 'hsl(var(--input))',
+                                  ring: 'hsl(var(--ring))',
+                                  background: 'hsl(var(--background))',
+                                  foreground: 'hsl(var(--foreground))',
+                                  primary: {
+                                      DEFAULT: 'hsl(var(--primary))',
+                                      foreground: 'hsl(var(--primary-foreground))'
+                                  },
+                                  secondary: {
+                                      DEFAULT: 'hsl(var(--secondary))',
+                                      foreground: 'hsl(var(--secondary-foreground))'
+                                  },
+                                  destructive: {
+                                      DEFAULT: 'hsl(var(--destructive))',
+                                      foreground: 'hsl(var(--destructive-foreground))'
+                                  },
+                                  muted: {
+                                      DEFAULT: 'hsl(var(--muted))',
+                                      foreground: 'hsl(var(--muted-foreground))'
+                                  },
+                                  accent: {
+                                      DEFAULT: 'hsl(var(--accent))',
+                                      foreground: 'hsl(var(--accent-foreground))'
+                                  },
+                                  popover: {
+                                      DEFAULT: 'hsl(var(--popover))',
+                                      foreground: 'hsl(var(--popover-foreground))'
+                                  },
+                                  card: {
+                                      DEFAULT: 'hsl(var(--card))',
+                                      foreground: 'hsl(var(--card-foreground))'
+                                  },
+                              },
+                          }
+                      }
+                  }
+              </script>
+              <style type="text/tailwindcss">
+                  @layer base {
+                      :root {
+                          --background: 0 0% 100%;
+      --foreground: 224 71.4% 4.1%;
+      --card: 0 0% 100%;
+      --card-foreground: 224 71.4% 4.1%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 224 71.4% 4.1%;
+      --primary: 220.9 39.3% 11%;
+      --primary-foreground: 210 20% 98%;
+      --secondary: 220 14.3% 95.9%;
+      --secondary-foreground: 220.9 39.3% 11%;
+      --muted: 220 14.3% 95.9%;
+      --muted-foreground: 220 8.9% 46.1%;
+      --accent: 220 14.3% 95.9%;
+      --accent-foreground: 220.9 39.3% 11%;
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 210 20% 98%;
+      --border: 220 13% 91%;
+      --input: 220 13% 91%;
+      --ring: 224 71.4% 4.1%;
+      --radius: 0.35rem;
+                      }
+                      .dark {
+                          --background: 224 71.4% 4.1%;
+      --foreground: 210 20% 98%;
+      --card: 224 71.4% 4.1%;
+      --card-foreground: 210 20% 98%;
+      --popover: 224 71.4% 4.1%;
+      --popover-foreground: 210 20% 98%;
+      --primary: 210 20% 98%;
+      --primary-foreground: 220.9 39.3% 11%;
+      --secondary: 215 27.9% 16.9%;
+      --secondary-foreground: 210 20% 98%;
+      --muted: 215 27.9% 16.9%;
+      --muted-foreground: 217.9 10.6% 64.9%;
+      --accent: 215 27.9% 16.9%;
+      --accent-foreground: 210 20% 98%;
+      --destructive: 0 62.8% 30.6%;
+      --destructive-foreground: 210 20% 98%;
+      --border: 215 27.9% 16.9%;
+      --input: 215 27.9% 16.9%;
+      --ring: 216 12.2% 83.9%;
+                      }
+                  }
+
+                  body{
+                    background-color: #1e40af
+                    ;
+                  }
+                  .swal-modal {
+             width:300px;
+             height:300px;
+}
+              </style>
+        </head>
+        <body>
+            <form id ="signup">
+
+                <div class="flex justify-center items-center h-screen bg-gradient-to-br from-blue-400 to-blue-600">
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <h2 class="text-2xl font-bold text-center text-blue-800 mb-4">Sign Up</h2>
+                        <form>
+                            <div class="mb-4">
+                                <label for="name" class="block text-blue-800">Name</label>
+                                <input type="text" id="name" name="name" autocomplete="username" class="w-full px-3 py-2 border rounded-lg text-blue-800" required />
+                            </div>
+
+                             <div class="mb-4">
+                                <label for="email" class="block text-blue-800">Email</label>
+                                <input type="text" id="email" name="email" autocomplete="email" class="w-full px-3 py-2 border rounded-lg text-blue-800" />
+                            </div>
+                                 
+                            <div class="form-group">
+                                <label for="role">Select Role</label>
+                                <select id="role" class="form-control">
+                                    <option value="IT Developer">IT Developer</option>
+                                    <option value="Project Manager">Project Manager</option>
+                                    <option value="UI/UX Designer">UI/UX Designer</option>
+                                    <option value="QA Engineer">QA Engineer</option>
+                                    <option value="System Administrator">System Administrator</option>
+                                    <option value="Data Analyst">Data Analyst</option>
+                                </select>
+                            </div>
+                            <div class="mb-6">
+                                <label for="password" class="block text-blue-800">Password</label>
+                                <input type="password" id="password" name="password" class="w-full px-3 py-2 border rounded-lg text-blue-800" />
+                            </div>
+                            <div class="mb-6">
+                              <label for="password" class="block text-blue-800">Confirm Password</label>
+                              <input type="password" id="password2" name="password" class="w-full px-3 py-2 border rounded-lg text-blue-800" />
+                          </div>
+                            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">Sign Up</button>
+                        </form>
+                        <div class="mt-4 text-center">
+                            <a href="#" class="text-blue-600 hover:underline">Forgot Password?</a>
+                            <span class="text-blue-800 mx-2"></span>
+                            <a href="form.html" class="text-blue-600 hover:underline">Login</a> 
+                             
+                            
+                        </div>
+                    </div>
+                </div>
+            </form>
+          
+        </body>
+      </html>
+      <script>
+
+/*document.getElementById('signup').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const dob = document.getElementById('dob').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('password2').value;
+            
+            // Basic validation
+            if (!name || !dob || !password || !confirmPassword) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Check if password contains at least one number
+            const hasNumber = /\d/.test(password);
+            
+            // Check if password contains at least one special character
+            const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password);
+            
+            if (!hasNumber || !hasSpecialChar) {
+                alert('Password must contain at least one number and one special character');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            // If everything is valid
+
+            
+            swal({
+        title: "Success!",
+        text: "Sign up successful!",
+        icon: "success",
+       
+    }).then(() => {
+        // Redirect to login page after user clicks OK on the SweetAlert
+        window.location.href = 'form.html';
+    });
+
+   
+        });*/
+// Signup Form Event Listener
+/*document.addEventListener('DOMContentLoaded', function() {
+    const signupForm = document.getElementById('signup');
+    if (signupForm) {
+        signupForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            // Get form values - Fix the role ID to match your HTML
+            const name = document.getElementById('name').value;
+            // Change 'text' to 'role' or match whatever ID your role input field has
+           
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('password2').value;
+            
+            // Basic validation
+            if (!name  || !password || !confirmPassword) {
+                alert('Please fill in all fields');
+                return; 
+            }
+            
+            // Check if password contains at least one number
+            const hasNumber = /\d/.test(password);
+            
+            // Check if password contains at least one special character
+            const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password);
+            
+            if (!hasNumber || !hasSpecialChar) {
+                alert('Password must contain at least one number and one special character');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            // Check if user already exists in local storage
+            const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Check if user with same name already exists
+            const userExists = existingUsers.some(user => 
+                user.name.toLowerCase() === name.toLowerCase()
+            );
+            
+            if (userExists) {
+                // Show error SweetAlert for existing user
+                swal({
+                    title: "Registration Failed",
+                    text: "A user with this name already exists!",
+                    icon: "error",
+                    customClass: {
+                        popup: 'small-swal'
+                    }
+                });
+                return;
+            }
+            
+            try {
+                // Hash the password before storing
+                const hashedPassword = await hashPassword(password);
+                
+                // If everything is valid, add the new user to local storage with hashed password
+                const newUser = {
+                    name: name,
+                    password: hashedPassword,
+                   
+                    registeredDate: new Date().toISOString()
+                };
+                
+                existingUsers.push(newUser);
+                localStorage.setItem('users', JSON.stringify(existingUsers));
+                
+                // Show success SweetAlert
+                swal({
+                    title: "Success!",
+                    text: "Sign up successful!",
+                    icon: "success",
+                    customClass: {
+                        popup: 'small-swal'
+                    }
+                }).then(() => {
+                    // Redirect to login page after user clicks OK on the SweetAlert
+                    window.location.href = 'form.html';
+                });
+            } catch (error) {
+                console.error("Error during password hashing:", error);
+                alert("Registration failed. Please try again.");
+            }
+        });
+    }
+});
+
+// Function to hash a password using SHA-256
+async function hashPassword(password) {
+    // Convert the password string to an ArrayBuffer
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    
+    // Generate a salt (for production, store this salt with the user record)
+    // In a real application, each user should have their own unique salt
+    const salt = "YourSecureSalt"; // Consider generating a random salt per user
+    const saltedPassword = password + salt;
+    const saltedData = encoder.encode(saltedPassword);
+    
+    // Hash the salted password
+    const hashBuffer = await crypto.subtle.digest('SHA-256', saltedData);
+    
+    // Convert the hash to a hex string
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    
+    return hashedPassword;
+}*/
+
+document.addEventListener('DOMContentLoaded', function() {
+    const signupForm = document.getElementById('signup');
+    if (signupForm) {
+        signupForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+              const email = document.getElementById('email').value;
+            const role = document.getElementById('role').value; // Get selected role from dropdown
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('password2').value;
+            
+            // Basic validation
+            if (!name || !role || !password || !confirmPassword) {
+                swal({
+                    title: "Error",
+                    text: "Please fill in all fields",
+                    icon: "error",
+                    customClass: {
+                        popup: 'small-swal'
+                    }
+                });
+                return; 
+            }
+            
+            // Password validation
+            const hasNumber = /\d/.test(password);
+            const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password);
+            
+            if (!hasNumber || !hasSpecialChar) {
+                swal({
+                    title: "Error",
+                    text: "Password must contain at least one number and one special character",
+                    icon: "error",
+                    customClass: {
+                        popup: 'small-swal'
+                    }
+                });
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                swal({
+                    title: "Error",
+                    text: "Passwords do not match",
+                    icon: "error",
+                    customClass: {
+                        popup: 'small-swal'
+                    }
+                });
+                return;
+            }
+            
+            // Check if user already exists
+            const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+            const userExists = existingUsers.some(user => 
+                user.name.toLowerCase() === name.toLowerCase() 
+                 
+            );
+            
+            if (userExists) {
+                swal({
+                    title: "Registration Failed",
+                    text: "A user with this name or email already exists!",
+                    icon: "error",
+                    customClass: {
+                        popup: 'small-swal'
+                    }
+                });
+                return;
+            }
+            
+            try {
+                // Hash the password
+                const hashedPassword = await hashPassword(password);
+                
+                // Create a unique employee ID (you can use a more sophisticated method)
+                const employeeId = "EMP" + (100 + existingUsers.length).toString().padStart(3, '0');
+                
+                // Create the new user object with role and employeeId
+                const newUser = {
+                    name: name,
+                    email:email,
+                    password: hashedPassword,
+                    role: role,
+                    employeeId: employeeId,
+                    registeredDate: new Date().toISOString()
+                };
+                
+                // Save the user
+                existingUsers.push(newUser);
+                localStorage.setItem('users', JSON.stringify(existingUsers));
+                
+                // Show success message
+                swal({
+                    title: "Success!",
+                    text: "Sign up successful!",
+                    icon: "success",
+                    customClass: {
+                        popup: 'small-swal'
+                    }
+                }).then(() => {
+                    // Redirect to login page
+                    window.location.href = 'form.html';
+                });
+            } catch (error) {
+                console.error("Error during registration:", error);
+                swal({
+                    title: "Error",
+                    text: "Registration failed. Please try again.",
+                    icon: "error",
+                    customClass: {
+                        popup: 'small-swal'
+                    }
+                });
+            }
+        });
+    }
+});
+
+// Function to hash a password using SHA-256
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const salt = "YourSecureSalt";
+    const saltedPassword = password + salt;
+    const saltedData = encoder.encode(saltedPassword);
+    
+    const hashBuffer = await crypto.subtle.digest('SHA-256', saltedData);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    
+    return hashedPassword;
+}
+
+
+       
+      </script>
+</body>
+</html>

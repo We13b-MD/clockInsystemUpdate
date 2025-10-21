@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Clocking System</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
+   
+    <script type="text/javascript">
+        window.tailwind.config = {
+            darkMode: ['class'],
+            theme: {
+                extend: {
+                    colors: {
+                        border: 'hsl(var(--border))',
+                        input: 'hsl(var(--input))',
+                        ring: 'hsl(var(--ring))',
+                        background: 'hsl(var(--background))',
+                        foreground: 'hsl(var(--foreground))',
+                        primary: {
+                            DEFAULT: 'hsl(var(--primary))',
+                            foreground: 'hsl(var(--primary-foreground))'
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(var(--secondary))',
+                            foreground: 'hsl(var(--secondary-foreground))'
+                        },
+                        destructive: {
+                            DEFAULT: 'hsl(var(--destructive))',
+                            foreground: 'hsl(var(--destructive-foreground))'
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(var(--muted))',
+                            foreground: 'hsl(var(--muted-foreground))'
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(var(--accent))',
+                            foreground: 'hsl(var(--accent-foreground))'
+                        },
+                        popover: {
+                            DEFAULT: 'hsl(var(--popover))',
+                            foreground: 'hsl(var(--popover-foreground))'
+                        },
+                        card: {
+                            DEFAULT: 'hsl(var(--card))',
+                            foreground: 'hsl(var(--card-foreground))'
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --background: 0 0% 100%;
+                --foreground: 224 71.4% 4.1%;
+                --card: 0 0% 100%;
+                --card-foreground: 224 71.4% 4.1%;
+                --popover: 0 0% 100%;
+                --popover-foreground: 224 71.4% 4.1%;
+                --primary: 220.9 39.3% 11%;
+                --primary-foreground: 210 20% 98%;
+                --secondary: 220 14.3% 95.9%;
+                --secondary-foreground: 220.9 39.3% 11%;
+                --muted: 220 14.3% 95.9%;
+                --muted-foreground: 220 8.9% 46.1%;
+                --accent: 220 14.3% 95.9%;
+                --accent-foreground: 220.9 39.3% 11%;
+                --destructive: 0 84.2% 60.2%;
+                --destructive-foreground: 210 20% 98%;
+                --border: 220 13% 91%;
+                --input: 220 13% 91%;
+                --ring: 224 71.4% 4.1%;
+                --radius: 0.35rem;
+            }
+            .dark {
+                --background: 224 71.4% 4.1%;
+                --foreground: 210 20% 98%;
+                --card: 224 71.4% 4.1%;
+                --card-foreground: 210 20% 98%;
+                --popover: 224 71.4% 4.1%;
+                --popover-foreground: 210 20% 98%;
+                --primary: 210 20% 98%;
+                --primary-foreground: 220.9 39.3% 11%;
+                --secondary: 215 27.9% 16.9%;
+                --secondary-foreground: 210 20% 98%;
+                --muted: 215 27.9% 16.9%;
+                --muted-foreground: 217.9 10.6% 64.9%;
+                --accent: 215 27.9% 16.9%;
+                --accent-foreground: 210 20% 98%;
+                --destructive: 0 62.8% 30.6%;
+                --destructive-foreground: 210 20% 98%;
+                --border: 215 27.9% 16.9%;
+                --input: 215 27.9% 16.9%;
+                --ring: 216 12.2% 83.9%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Sidebar - Hidden on mobile, shown on tablet/desktop -->
+        <div class="bg-blue-900 text-white w-full md:w-64 md:flex-shrink-0 md:block hidden" id="sidebar">
+            <div class="p-4">
+                <h2 class="text-2xl font-bold mb-8">MikiClock</h2>
+                <nav>
+                    <ul>
+
+                         <li class="mb-2">
+                            <a href="home.html" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                            <i class="fas fa-home mr-3"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        
+                        <li class="mb-2">
+                            <a href="#" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                                <i class="fas fa-tachometer-alt mr-3"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="admin.html" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                                <i class="fas fa-users-cog mr-3"></i>
+                                <span>Admin Panel</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="timehistory.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                <i class="fas fa-history mr-3"></i>
+                                <span>Time History</span>
+                            </a>
+                        </li>
+                            <li class="mb-2">
+                                <a href="forum.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-cog mr-3"></i>
+                                    <span>Forum</span>
+                                </a>
+                            </li>
+                        <li class="mb-2">
+                            <a href="settings.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                 <i class="fas fa-cog mr-3"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="mt-auto p-4 border-t border-blue-800">
+                <a href="form.html" id="logout-link" class="flex items-center p-2 rounded-md hover:bg-blue-700">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1">
+            <!-- Mobile Top Bar -->
+            <div class="bg-blue-900 text-white p-4 flex justify-between items-center md:hidden">
+                <h2 class="text-xl font-bold">MikiClock</h2>
+                <button id="menuToggle" class="text-white focus:outline-none">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Sidebar (Hidden by default) -->
+            <div class="bg-blue-900 text-white w-full hidden" id="mobileSidebar">
+                <div class="p-4">
+                    <nav>
+                        <ul>
+                              <li class="mb-2">
+                            <a href="home.html" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                               <i class="fas fa-home mr-3"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                            <li class="mb-2">
+                                <a href="dashboard.html" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                                    <i class="fas fa-tachometer-alt mr-3"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                          
+                            <li class="mb-2">
+                                <a href="timehistory.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-history mr-3"></i>
+                                    <span>Time History</span>
+                                </a>
+                            </li>
+
+                             <li class="mb-2">
+                                <a href="forum.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-cog mr-3"></i>
+                                    <span>Forum</span>
+                                </a>
+                            </li>
+                          
+                            <li class="mb-2">
+                                <a href="settings.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-cog mr-3"></i>
+                                    <span>Settings</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="form.html" id="logout-link" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-sign-out-alt mr-3"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-4 md:p-8">
+                <!-- Header with Current Time -->
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
+                    <div class="text-lg font-semibold" id="currentTime">
+                        <span id="currentDate"></span> | <span id="clock"></span>
+                    </div>
+                </div>
+
+                <!-- User Info Card -->
+                <div class="bg-white rounded-lg shadow-md p-4 mb-6 flex flex-col md:flex-row md:items-center">
+    <div class="flex items-center mb-4 md:mb-0">
+        <img id="dashboardProfileImage" class="w-16 h-16 rounded-full object-cover mr-4" src="" alt="">
+        <div>
+                            <h2 class="text-xl font-bold" id="employeeName">John Doe</h2>
+                            <p class="text-gray-600" id="employeeId">ID: EMP001</p>
+                        </div>
+                    </div>
+                    <div class="md:ml-auto flex flex-col md:items-end">
+                       
+                        <p class="text-gray-600"> <span class="font-semibold"></span></p>
+                    </div>
+                </div>
+
+                <!-- Clock In/Out Card -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-xl font-bold mb-4">Clock In/Out</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="border rounded-lg p-4">
+                            <p class="text-gray-600 mb-2">Current Status:</p>
+                            <p class="text-lg font-bold" id="clockStatus">
+                                <span class="text-gray-500">
+                                    <i class="fas fa-circle text-xs mr-2"></i>Not Clocked In
+                                </span>
+                            </p>
+                        </div>
+                        <div class="border rounded-lg p-4">
+                            <p class="text-gray-600 mb-2">Today's Hours:</p>
+                            <p class="text-lg font-bold" id="todayHours">
+                                <span id="hoursWorked">--</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="border rounded-lg p-4">
+                            <p class="text-gray-600 mb-2">Clock In Time:</p>
+                            <p class="text-lg font-bold" id="clockInTime">--:-- --</p>
+                        </div>
+                        <div class="border rounded-lg p-4">
+                            <p class="text-gray-600 mb-2">Clock Out Time:</p>
+                            <p class="text-lg font-bold" id="clockOutTime">--:-- --</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <button id="clockInBtn" class="bg-blue-900 text-white py-3 px-6 rounded-lg hover:bg-blue-800 transition duration-300 flex-1 flex items-center justify-center">
+                            <i class="fas fa-sign-in-alt mr-2"></i> Clock In
+                        </button>
+                        <button id="clockOutBtn" class="bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition duration-300 flex-1 flex items-center justify-center" disabled>
+                            <i class="fas fa-sign-out-alt mr-2"></i> Clock Out
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-bold mb-4">Recent Activity</h2>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-600 text-left">
+                                    <th class="py-3 px-4 font-semibold">Date</th>
+                                    <th class="py-3 px-4 font-semibold">Clock In</th>
+                                    <th class="py-3 px-4 font-semibold">Clock Out</th>
+                                    <th class="py-3 px-4 font-semibold">Total Hours</th>
+                                    <th class="py-3 px-4 font-semibold">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activityTableBody">
+                                <!-- Activity records will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Mobile menu toggle script -->
+    
+       
+    
+    <!-- Clock System Functionality -->
+    <script>
+
+
+    
+
+   /* document.addEventListener('DOMContentLoaded', function() {
+       
+    const loggedInUser = sessionStorage.getItem('loggedInUser');
+    const userRole = sessionStorage.getItem('userRole');
+    
+    // Declare userData in the global scope of this function so it can be used by all functions
+    let userData = {
+        name: "",
+        id: "",
+        department: "",
+        position: ""
+    };
+    
+    if (!loggedInUser) {
+        // If not logged in, redirect to login page
+        window.location.href = 'form.html';
+        return;
+    }
+    
+    // Function to get current user data from localStorage
+    function getCurrentUserData() {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        return users.find(user => user.name === loggedInUser);
+    }
+    
+   
+function updateUserDisplay() {
+    const currentUser = getCurrentUserData();
+    
+    if (currentUser) {
+        
+        
+        // Update userData object with current user's data
+        // Since signup saves as 'role', we use that field for position
+        userData = {
+            name: currentUser.name,
+            email:currentUser.email,
+            id: currentUser.employeeId,
+            department: currentUser.role || "Not Specified", // Using role as department too
+            position: currentUser.role || "Not Specified"    // This is the key fix!
+        };
+        
+        //console.log('Updated userData object:', userData); // Debug log
+        
+        // Update basic user info
+        const employeeNameElement = document.getElementById('employeeName');
+        const employeeIdElement = document.getElementById('employeeId');
+        
+        if (employeeNameElement) {
+            employeeNameElement.textContent = currentUser.name;
+        }
+        
+        if (employeeIdElement) {
+            employeeIdElement.textContent = "ID: " + currentUser.employeeId;
+        }
+        
+        // Update department and position by directly modifying the HTML content
+        const positionText = "<span class=\"font-semibold\">Position: " + 
+                            (currentUser.role || "Not Specified") + "</span>";
+        
+        // Find the department and position paragraphs and update them
+        const paragraphs = document.querySelectorAll('p.text-gray-600');
+        if (paragraphs.length >= 1) {
+            paragraphs[0].innerHTML = positionText;
+        }
+        if (paragraphs.length >= 2) {
+            // You can add department info here if needed
+            paragraphs[1].innerHTML = "<span class=\"font-semibold\">Department: " + 
+                                    (currentUser.role || "Not Specified") + "</span>";
+        }
+        
+    } else {
+        console.error("User data not found!");
+        // Set default userData if current user not found
+        userData = {
+            name: loggedInUser,
+            id: "EMP001",
+            department: userRole || "Not Specified",
+            position: userRole || "Employee"
+        };
+    }
+}
+    
+    // Initial user data load
+    updateUserDisplay();
+    
+    // Listen for storage changes (when admin updates user data)
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'users') {
+            console.log('User data updated, refreshing display...');
+            updateUserDisplay();
+            // Also update the activity table in case employee ID changed
+            populateActivityTable();
+        }
+    });
+    
+    // For same-tab updates (if admin and dashboard are in same tab/window)
+    // Check for user data changes periodically
+    setInterval(function() {
+        const currentUser = getCurrentUserData();
+        if (currentUser && (
+            currentUser.name !== userData.name ||
+            currentUser.employeeId !== userData.id ||
+            currentUser.position !== userData.position
+        )) {
+            
+            updateUserDisplay();
+            populateActivityTable();
+        }
+    }, 2000); // Check every 2 seconds
+
+    // Get all clock records from localStorage
+    function getClockRecords() {
+        return JSON.parse(localStorage.getItem('clockRecords')) || [];
+    }
+
+    // Save clock records to localStorage
+    function saveClockRecords(records) {
+        localStorage.setItem('clockRecords', JSON.stringify(records));
+    }
+
+    // Get today's active record for current user (the one without clockOut)
+    function getActiveClockSession() {
+        const records = getClockRecords();
+        const today = new Date().toLocaleDateString('en-US');
+        
+        // Find the most recent record for today that doesn't have a clockOut time
+        return records.find(record => 
+            record.employeeId === userData.id && 
+            new Date(record.date).toLocaleDateString('en-US') === today &&
+            !record.clockOut
+        );
+    }
+
+    // Format time for display (12-hour format)
+    function formatTime(date) {
+        if (!date) return '--:-- --';
+        
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12;
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+        
+        return `${formattedHours}:${formattedMinutes} ${ampm}`;
+    }
+
+    // Calculate duration between two times
+    function calculateDuration(startTime, endTime) {
+        if (!startTime || !endTime) return '--';
+        
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+        const diffMs = end - start;
+        
+        const hours = Math.floor(diffMs / (1000 * 60 * 60));
+        const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        
+        return `${hours}h ${minutes}m`;
+    }
+
+    // Update the clock status UI
+    function updateClockStatus() {
+        const activeSession = getActiveClockSession();
+        
+        // Get DOM elements
+        const clockStatus = document.getElementById('clockStatus');
+        const clockInTime = document.getElementById('clockInTime');
+        const clockOutTime = document.getElementById('clockOutTime');
+        const hoursWorked = document.getElementById('hoursWorked');
+        const clockInBtn = document.getElementById('clockInBtn');
+        const clockOutBtn = document.getElementById('clockOutBtn');
+        
+        if (!activeSession) {
+            // No active session - user is clocked out
+            if (clockStatus) clockStatus.innerHTML = '<span class="text-gray-500"><i class="fas fa-circle text-xs mr-2"></i>Not Clocked In</span>';
+            if (clockInTime) clockInTime.textContent = '--:-- --';
+            if (clockOutTime) clockOutTime.textContent = '--:-- --';
+            if (hoursWorked) hoursWorked.textContent = '--';
+            
+            if (clockInBtn) clockInBtn.disabled = false;
+            if (clockOutBtn) clockOutBtn.disabled = true;
+            
+            return;
+        }
+        
+        // User is clocked in
+        const clockInDateTime = new Date(activeSession.clockIn);
+        if (clockStatus) clockStatus.innerHTML = '<span class="text-green-500"><i class="fas fa-circle text-xs mr-2"></i>Clocked In</span>';
+        if (clockInTime) clockInTime.textContent = formatTime(clockInDateTime);
+        if (clockOutTime) clockOutTime.textContent = '--:-- --';
+        
+        // Calculate hours worked so far
+        const currentTime = new Date();
+        if (hoursWorked) hoursWorked.textContent = calculateDuration(activeSession.clockIn, currentTime);
+        
+        // Update hours worked continuously
+        const hoursUpdateInterval = setInterval(() => {
+            const now = new Date();
+            // Check if we're still clocked in
+            if (getActiveClockSession()) {
+                if (hoursWorked) hoursWorked.textContent = calculateDuration(activeSession.clockIn, now);
+            } else {
+                clearInterval(hoursUpdateInterval);
+            }
+        }, 60000); // Update every minute
+        
+        if (clockInBtn) clockInBtn.disabled = true;
+        if (clockOutBtn) clockOutBtn.disabled = false;
+    }
+
+    // Populate recent activity table
+    function populateActivityTable() {
+        const activityTableBody = document.getElementById('activityTableBody');
+        if (!activityTableBody) return;
+        
+        const records = getClockRecords().filter(record => record.employeeId === userData.id);
+        // Sort records by date (newest first)
+        records.sort((a, b) => new Date(b.clockIn) - new Date(a.clockIn));
+        
+        // Clear existing rows except header
+        activityTableBody.innerHTML = '';
+        
+        // Add records to table (show up to 5 most recent)
+        const recordsToShow = records.slice(0, 5);
+        
+        recordsToShow.forEach(record => {
+            const row = document.createElement('tr');
+            row.className = 'border-b';
+            
+            // Format date for display
+            const recordDate = new Date(record.date);
+            const dateFormatted = recordDate.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+            
+            const clockInTime = formatTime(new Date(record.clockIn));
+            const clockOutTime = record.clockOut ? formatTime(new Date(record.clockOut)) : '--:-- --';
+            const totalHours = record.clockOut ? 
+                calculateDuration(record.clockIn, record.clockOut) : 
+                'In Progress';
+            
+            const status = record.clockOut ? 
+                '<span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Complete</span>' : 
+                '<span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">In Progress</span>';
+            
+            row.innerHTML = `
+                <td class="py-3 px-4">${dateFormatted}</td>
+                <td class="py-3 px-4">${clockInTime}</td>
+                <td class="py-3 px-4">${clockOutTime}</td>
+                <td class="py-3 px-4">${totalHours}</td>
+                <td class="py-3 px-4">${status}</td>
+            `;
+            
+            activityTableBody.appendChild(row);
+        });
+        
+        // If no records, show a message
+        if (records.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td colspan="5" class="py-4 px-4 text-center text-gray-500">No clock records found</td>
+            `;
+            activityTableBody.appendChild(row);
+        }
+    }
+
+    // Clock In function
+    function clockIn() {
+        const now = new Date();
+        
+        // Check if already clocked in (has an active session)
+        const activeSession = getActiveClockSession();
+        
+        if (activeSession) {
+            Swal.fire({
+                title: 'Already Clocked In',
+                text: 'You are currently clocked in. Please clock out first.',
+                icon: 'warning',
+                confirmButtonColor: '#1e40af'
+            });
+            return;
+        }
+        
+        // Create new clock record
+        const newRecord = {
+            id: Date.now().toString(),
+            employeeId: userData.id,
+            date: now.toISOString().split('T')[0],
+            clockIn: now.toISOString(),
+            clockOut: null,
+            location: 'Office', // Could be dynamic based on geolocation
+            ipAddress: '192.168.1.1' // Could be captured from client if needed
+        };
+        
+        // Add to records
+        const records = getClockRecords();
+        records.push(newRecord);
+        saveClockRecords(records);
+        
+        // Update UI
+        updateClockStatus();
+        populateActivityTable();
+        
+        // Show success message
+        Swal.fire({
+            title: 'Clocked In!',
+            text: `Successfully clocked in at ${formatTime(now)}`,
+            icon: 'success',
+            confirmButtonColor: '#1e40af'
+        });
+    }
+
+    // Clock Out function
+    function clockOut() {
+        const now = new Date();
+        
+        // Get active session
+        const records = getClockRecords();
+        const activeSession = getActiveClockSession();
+        
+        if (!activeSession) {
+            Swal.fire({
+                title: 'Not Clocked In',
+                text: 'You need to clock in first!',
+                icon: 'warning',
+                confirmButtonColor: '#1e40af'
+            });
+            return;
+        }
+        
+        // Update the record with clock out time
+        const recordIndex = records.findIndex(r => r.id === activeSession.id);
+        records[recordIndex].clockOut = now.toISOString();
+        saveClockRecords(records);
+        
+        // Update UI
+        updateClockStatus();
+        populateActivityTable();
+        
+        // Calculate hours worked
+        const hoursWorked = calculateDuration(activeSession.clockIn, now);
+        
+        // Show success message
+        Swal.fire({
+            title: 'Clocked Out!',
+            text: `Successfully clocked out at ${formatTime(now)}. Total hours worked: ${hoursWorked}`,
+            icon: 'success',
+            confirmButtonColor: '#1e40af'
+        });
+    }
+
+    // Add a logout function
+    function logoutUser(event) {
+        if (event) {
+            event.preventDefault();
+        }
+        
+        // Check if user is clocked in
+        const activeSession = getActiveClockSession();
+        if (activeSession) {
+            // Ask if user wants to clock out before logging out
+            Swal.fire({
+                title: 'Still Clocked In',
+                text: 'You are still clocked in. Would you like to clock out before logging out?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Clock Out & Logout',
+                cancelButtonText: 'Just Logout',
+                confirmButtonColor: '#1e40af',
+                cancelButtonColor: '#6b7280'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Clock out first, then logout
+                    const now = new Date();
+                    const records = getClockRecords();
+                    const recordIndex = records.findIndex(r => r.id === activeSession.id);
+                    records[recordIndex].clockOut = now.toISOString();
+                    saveClockRecords(records);
+                    
+                    // Now logout
+                    performLogout();
+                } else {
+                    // Just logout without clocking out
+                    performLogout();
+                }
+            });
+        } else {
+            // Not clocked in, so just logout
+            performLogout();
+        }
+    }
+    
+    // Helper function to perform the actual logout
+    function performLogout() {
+        // Clear user data from session storage
+        sessionStorage.removeItem('loggedInUser');
+        sessionStorage.removeItem('userPassword');
+        sessionStorage.removeItem('userRole');
+        sessionStorage.clear();
+       
+        
+        // Show logout success message
+        Swal.fire({
+            title: 'Logged Out',
+            text: 'You have been successfully logged out.',
+            icon: 'success',
+            confirmButtonColor: '#1e40af'
+        }).then(() => {
+            // Redirect to login page
+            window.location.href = 'form.html';
+        });
+    }
+
+    // Event listeners for clock buttons
+    const clockInBtn = document.getElementById('clockInBtn');
+    const clockOutBtn = document.getElementById('clockOutBtn');
+    
+    if (clockInBtn) clockInBtn.addEventListener('click', clockIn);
+    if (clockOutBtn) clockOutBtn.addEventListener('click', clockOut);
+    
+    // Add logout event listeners
+    const logoutLinks = document.querySelectorAll('[id="logout-link"]');
+    logoutLinks.forEach(link => {
+        link.addEventListener('click', logoutUser);
+    });
+    
+    // Initialize the UI
+    updateClockStatus();
+    populateActivityTable();
+});
+
+// Mobile Sidebar Toggle Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileSidebar = document.getElementById('mobileSidebar');
+    
+    if (!menuToggle || !mobileSidebar) return;
+    
+    // Toggle mobile sidebar when menu button is clicked
+    menuToggle.addEventListener('click', function() {
+        mobileSidebar.classList.toggle('hidden');
+        
+        // Optional: Change the icon from bars to X when sidebar is open
+        const icon = menuToggle.querySelector('i');
+        if (icon) {
+            if (mobileSidebar.classList.contains('hidden')) {
+                icon.className = 'fas fa-bars';
+            } else {
+                icon.className = 'fas fa-times';
+            }
+        }
+    });
+    
+    // Optional: Close mobile sidebar when clicking on a menu item
+    const mobileMenuLinks = mobileSidebar.querySelectorAll('a');
+    mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            // Close the sidebar after clicking a menu item
+            mobileSidebar.classList.add('hidden');
+            
+            // Reset the icon back to bars
+            const icon = menuToggle.querySelector('i');
+            if (icon) icon.className = 'fas fa-bars';
+        });
+    });
+    
+    // Optional: Close mobile sidebar when clicking outside of it
+    document.addEventListener('click', function(event) {
+        const isClickInsideSidebar = mobileSidebar.contains(event.target);
+        const isClickOnToggle = menuToggle.contains(event.target);
+        
+        // If click is outside sidebar and not on the toggle button, close sidebar
+        if (!isClickInsideSidebar && !isClickOnToggle && !mobileSidebar.classList.contains('hidden')) {
+            mobileSidebar.classList.add('hidden');
+            
+            // Reset the icon back to bars
+            const icon = menuToggle.querySelector('i');
+            if (icon) icon.className = 'fas fa-bars';
+        }
+    });
+    
+    // Optional: Close mobile sidebar when window is resized to desktop size
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 768) { // md breakpoint in Tailwind
+            mobileSidebar.classList.add('hidden');
+            
+            // Reset the icon back to bars
+            const icon = menuToggle.querySelector('i');
+            if (icon) icon.className = 'fas fa-bars';
+        }
+    });
+});*/
+
+
+<!-- Replace ALL your existing script tags with this single script block -->
+
+// ===== PROFILE UTILITIES =====
+function getUserProfileImage(user) {
+    if (user && user.profileImage && user.profileImage.startsWith('data:')) {
+        return user.profileImage;
+    }
+    
+    const firstName = user?.firstName || user?.name?.split(' ')[0] || 'User';
+    const lastName = user?.lastName || user?.name?.split(' ')[1] || '';
+    const fullName = `${firstName} ${lastName}`.trim();
+    
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=random&size=128&length=2&bold=true`;
+}
+
+function updateProfileImageInUI(user) {
+    const profileImageUrl = getUserProfileImage(user);
+    const profileImageElements = document.querySelectorAll('#dashboardProfileImage, #profileImage, [data-profile-image]');
+    
+    profileImageElements.forEach(element => {
+        if (element.tagName === 'IMG') {
+            element.src = profileImageUrl;
+            element.onerror = function() {
+                const firstName = user?.firstName || user?.name?.split(' ')[0] || 'User';
+                const lastName = user?.lastName || user?.name?.split(' ')[1] || '';
+                const fullName = `${firstName} ${lastName}`.trim();
+                this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=random&size=128`;
+            };
+        }
+    });
+}
+
+function getCurrentUser() {
+    const currentUser = sessionStorage.getItem('loggedInUser');
+    if (!currentUser) return null;
+    
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    return users.find(u => u.name.toLowerCase() === currentUser.toLowerCase());
+}
+
+function loadUserProfileDisplay() {
+    const user = getCurrentUser();
+    if (user) {
+        updateProfileImageInUI(user);
+    }
+    return user;
+}
+
+function setupProfileUpdateListener() {
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'users') {
+            console.log('Profile updated from other tab');
+            loadUserProfileDisplay();
+        }
+    });
+    
+    window.addEventListener('userProfileUpdated', function() {
+        console.log('Profile updated in same tab');
+        loadUserProfileDisplay();
+    });
+    
+    setInterval(() => {
+        const user = getCurrentUser();
+        if (user && user.profileImage) {
+            updateProfileImageInUI(user);
+        }
+    }, 2000);
+}
+
+// ===== DASHBOARD MAIN CODE =====
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize profile system
+    loadUserProfileDisplay();
+    setupProfileUpdateListener();
+    
+    const loggedInUser = sessionStorage.getItem('loggedInUser');
+    const userRole = sessionStorage.getItem('userRole');
+    
+    // Declare userData in the global scope of this function so it can be used by all functions
+    let userData = {
+        name: "",
+        id: "",
+        department: "",
+        position: ""
+    };
+    
+    if (!loggedInUser) {
+        // If not logged in, redirect to login page
+        window.location.href = 'form.html';
+        return;
+    }
+    
+    // Function to get current user data from localStorage
+    function getCurrentUserData() {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        return users.find(user => user.name === loggedInUser);
+    }
+    
+    function updateUserDisplay() {
+        const currentUser = getCurrentUserData();
+        
+        if (currentUser) {
+            // Update userData object with current user's data
+            userData = {
+                name: currentUser.name,
+                email: currentUser.email,
+                id: currentUser.employeeId,
+                department: currentUser.role || "Not Specified",
+                position: currentUser.role || "Not Specified"
+            };
+            
+            // Update basic user info
+            const employeeNameElement = document.getElementById('employeeName');
+            const employeeIdElement = document.getElementById('employeeId');
+            
+            if (employeeNameElement) {
+                employeeNameElement.textContent = currentUser.name;
+            }
+            
+            if (employeeIdElement) {
+                employeeIdElement.textContent = "ID: " + currentUser.employeeId;
+            }
+            
+            // Update position and department by directly modifying the HTML content
+            const positionText = "<span class=\"font-semibold\">Position: " + 
+                                (currentUser.role || "Not Specified") + "</span>";
+            
+            // Find the department and position paragraphs and update them
+            const paragraphs = document.querySelectorAll('p.text-gray-600');
+            if (paragraphs.length >= 1) {
+                paragraphs[0].innerHTML = positionText;
+            }
+            if (paragraphs.length >= 2) {
+                paragraphs[1].innerHTML = "<span class=\"font-semibold\">Department: " + 
+                                        (currentUser.role || "Not Specified") + "</span>";
+            }
+            
+        } else {
+            console.error("User data not found!");
+            // Set default userData if current user not found
+            userData = {
+                name: loggedInUser,
+                id: "EMP001",
+                department: userRole || "Not Specified",
+                position: userRole || "Employee"
+            };
+        }
+    }
+    
+    // Initial user data load
+    updateUserDisplay();
+    
+    // Listen for storage changes (when admin updates user data)
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'users') {
+            console.log('User data updated, refreshing display...');
+            updateUserDisplay();
+            // Also update the activity table in case employee ID changed
+            populateActivityTable();
+        }
+    });
+    
+    // For same-tab updates (if admin and dashboard are in same tab/window)
+    // Check for user data changes periodically
+    setInterval(function() {
+        const currentUser = getCurrentUserData();
+        if (currentUser && (
+            currentUser.name !== userData.name ||
+            currentUser.employeeId !== userData.id ||
+            currentUser.position !== userData.position
+        )) {
+            
+            updateUserDisplay();
+            populateActivityTable();
+        }
+    }, 2000); // Check every 2 seconds
+
+    // Get all clock records from localStorage
+    function getClockRecords() {
+        return JSON.parse(localStorage.getItem('clockRecords')) || [];
+    }
+
+    // Save clock records to localStorage
+    function saveClockRecords(records) {
+        localStorage.setItem('clockRecords', JSON.stringify(records));
+    }
+
+    // Get today's active record for current user (the one without clockOut)
+    function getActiveClockSession() {
+        const records = getClockRecords();
+        const today = new Date().toLocaleDateString('en-US');
+        
+        // Find the most recent record for today that doesn't have a clockOut time
+        return records.find(record => 
+            record.employeeId === userData.id && 
+            new Date(record.date).toLocaleDateString('en-US') === today &&
+            !record.clockOut
+        );
+    }
+
+    // Format time for display (12-hour format)
+    function formatTime(date) {
+        if (!date) return '--:-- --';
+        
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12;
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+        
+        return `${formattedHours}:${formattedMinutes} ${ampm}`;
+    }
+
+    // Calculate duration between two times
+    function calculateDuration(startTime, endTime) {
+        if (!startTime || !endTime) return '--';
+        
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+        const diffMs = end - start;
+        
+        const hours = Math.floor(diffMs / (1000 * 60 * 60));
+        const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        
+        return `${hours}h ${minutes}m`;
+    }
+
+    // Update the clock status UI
+    function updateClockStatus() {
+        const activeSession = getActiveClockSession();
+        
+        // Get DOM elements
+        const clockStatus = document.getElementById('clockStatus');
+        const clockInTime = document.getElementById('clockInTime');
+        const clockOutTime = document.getElementById('clockOutTime');
+        const hoursWorked = document.getElementById('hoursWorked');
+        const clockInBtn = document.getElementById('clockInBtn');
+        const clockOutBtn = document.getElementById('clockOutBtn');
+        
+        if (!activeSession) {
+            // No active session - user is clocked out
+            if (clockStatus) clockStatus.innerHTML = '<span class="text-gray-500"><i class="fas fa-circle text-xs mr-2"></i>Not Clocked In</span>';
+            if (clockInTime) clockInTime.textContent = '--:-- --';
+            if (clockOutTime) clockOutTime.textContent = '--:-- --';
+            if (hoursWorked) hoursWorked.textContent = '--';
+            
+            if (clockInBtn) clockInBtn.disabled = false;
+            if (clockOutBtn) clockOutBtn.disabled = true;
+            
+            return;
+        }
+        
+        // User is clocked in
+        const clockInDateTime = new Date(activeSession.clockIn);
+        if (clockStatus) clockStatus.innerHTML = '<span class="text-green-500"><i class="fas fa-circle text-xs mr-2"></i>Clocked In</span>';
+        if (clockInTime) clockInTime.textContent = formatTime(clockInDateTime);
+        if (clockOutTime) clockOutTime.textContent = '--:-- --';
+        
+        // Calculate hours worked so far
+        const currentTime = new Date();
+        if (hoursWorked) hoursWorked.textContent = calculateDuration(activeSession.clockIn, currentTime);
+        
+        // Update hours worked continuously
+        const hoursUpdateInterval = setInterval(() => {
+            const now = new Date();
+            // Check if we're still clocked in
+            if (getActiveClockSession()) {
+                if (hoursWorked) hoursWorked.textContent = calculateDuration(activeSession.clockIn, now);
+            } else {
+                clearInterval(hoursUpdateInterval);
+            }
+        }, 60000); // Update every minute
+        
+        if (clockInBtn) clockInBtn.disabled = true;
+        if (clockOutBtn) clockOutBtn.disabled = false;
+    }
+
+    // Populate recent activity table
+    function populateActivityTable() {
+        const activityTableBody = document.getElementById('activityTableBody');
+        if (!activityTableBody) return;
+        
+        const records = getClockRecords().filter(record => record.employeeId === userData.id);
+        // Sort records by date (newest first)
+        records.sort((a, b) => new Date(b.clockIn) - new Date(a.clockIn));
+        
+        // Clear existing rows except header
+        activityTableBody.innerHTML = '';
+        
+        // Add records to table (show up to 5 most recent)
+        const recordsToShow = records.slice(0, 5);
+        
+        recordsToShow.forEach(record => {
+            const row = document.createElement('tr');
+            row.className = 'border-b';
+            
+            // Format date for display
+            const recordDate = new Date(record.date);
+            const dateFormatted = recordDate.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+            
+            const clockInTime = formatTime(new Date(record.clockIn));
+            const clockOutTime = record.clockOut ? formatTime(new Date(record.clockOut)) : '--:-- --';
+            const totalHours = record.clockOut ? 
+                calculateDuration(record.clockIn, record.clockOut) : 
+                'In Progress';
+            
+            const status = record.clockOut ? 
+                '<span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Complete</span>' : 
+                '<span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">In Progress</span>';
+            
+            row.innerHTML = `
+                <td class="py-3 px-4">${dateFormatted}</td>
+                <td class="py-3 px-4">${clockInTime}</td>
+                <td class="py-3 px-4">${clockOutTime}</td>
+                <td class="py-3 px-4">${totalHours}</td>
+                <td class="py-3 px-4">${status}</td>
+            `;
+            
+            activityTableBody.appendChild(row);
+        });
+        
+        // If no records, show a message
+        if (records.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td colspan="5" class="py-4 px-4 text-center text-gray-500">No clock records found</td>
+            `;
+            activityTableBody.appendChild(row);
+        }
+    }
+
+    // Clock In function
+    function clockIn() {
+        const now = new Date();
+        
+        // Check if already clocked in (has an active session)
+        const activeSession = getActiveClockSession();
+        
+        if (activeSession) {
+            Swal.fire({
+                title: 'Already Clocked In',
+                text: 'You are currently clocked in. Please clock out first.',
+                icon: 'warning',
+                confirmButtonColor: '#1e40af'
+            });
+            return;
+        }
+        
+        // Create new clock record
+        const newRecord = {
+            id: Date.now().toString(),
+            employeeId: userData.id,
+            date: now.toISOString().split('T')[0],
+            clockIn: now.toISOString(),
+            clockOut: null,
+            location: 'Office', // Could be dynamic based on geolocation
+            ipAddress: '192.168.1.1' // Could be captured from client if needed
+        };
+        
+        // Add to records
+        const records = getClockRecords();
+        records.push(newRecord);
+        saveClockRecords(records);
+        
+        // Update UI
+        updateClockStatus();
+        populateActivityTable();
+        
+        // Show success message
+        Swal.fire({
+            title: 'Clocked In!',
+            text: `Successfully clocked in at ${formatTime(now)}`,
+            icon: 'success',
+            confirmButtonColor: '#1e40af'
+        });
+    }
+
+    // Clock Out function
+    function clockOut() {
+        const now = new Date();
+        
+        // Get active session
+        const records = getClockRecords();
+        const activeSession = getActiveClockSession();
+        
+        if (!activeSession) {
+            Swal.fire({
+                title: 'Not Clocked In',
+                text: 'You need to clock in first!',
+                icon: 'warning',
+                confirmButtonColor: '#1e40af'
+            });
+            return;
+        }
+        
+        // Update the record with clock out time
+        const recordIndex = records.findIndex(r => r.id === activeSession.id);
+        records[recordIndex].clockOut = now.toISOString();
+        saveClockRecords(records);
+        
+        // Update UI
+        updateClockStatus();
+        populateActivityTable();
+        
+        // Calculate hours worked
+        const hoursWorked = calculateDuration(activeSession.clockIn, now);
+        
+        // Show success message
+        Swal.fire({
+            title: 'Clocked Out!',
+            text: `Successfully clocked out at ${formatTime(now)}. Total hours worked: ${hoursWorked}`,
+            icon: 'success',
+            confirmButtonColor: '#1e40af'
+        });
+    }
+
+    // Add a logout function
+    function logoutUser(event) {
+        if (event) {
+            event.preventDefault();
+        }
+        
+        // Check if user is clocked in
+        const activeSession = getActiveClockSession();
+        if (activeSession) {
+            // Ask if user wants to clock out before logging out
+            Swal.fire({
+                title: 'Still Clocked In',
+                text: 'You are still clocked in. Would you like to clock out before logging out?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Clock Out & Logout',
+                cancelButtonText: 'Just Logout',
+                confirmButtonColor: '#1e40af',
+                cancelButtonColor: '#6b7280'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Clock out first, then logout
+                    const now = new Date();
+                    const records = getClockRecords();
+                    const recordIndex = records.findIndex(r => r.id === activeSession.id);
+                    records[recordIndex].clockOut = now.toISOString();
+                    saveClockRecords(records);
+                    
+                    // Now logout
+                    performLogout();
+                } else {
+                    // Just logout without clocking out
+                    performLogout();
+                }
+            });
+        } else {
+            // Not clocked in, so just logout
+            performLogout();
+        }
+    }
+    
+    // Helper function to perform the actual logout
+    function performLogout() {
+        // Clear user data from session storage
+        sessionStorage.removeItem('loggedInUser');
+        sessionStorage.removeItem('userPassword');
+        sessionStorage.removeItem('userRole');
+        sessionStorage.clear();
+       
+        
+        // Show logout success message
+        Swal.fire({
+            title: 'Logged Out',
+            text: 'You have been successfully logged out.',
+            icon: 'success',
+            confirmButtonColor: '#1e40af'
+        }).then(() => {
+            // Redirect to login page
+            window.location.href = 'form.html';
+        });
+    }
+
+    // Event listeners for clock buttons
+    const clockInBtn = document.getElementById('clockInBtn');
+    const clockOutBtn = document.getElementById('clockOutBtn');
+    
+    if (clockInBtn) clockInBtn.addEventListener('click', clockIn);
+    if (clockOutBtn) clockOutBtn.addEventListener('click', clockOut);
+    
+    // Add logout event listeners
+    const logoutLinks = document.querySelectorAll('[id="logout-link"]');
+    logoutLinks.forEach(link => {
+        link.addEventListener('click', logoutUser);
+    });
+    
+    // Initialize the UI
+    updateClockStatus();
+    populateActivityTable();
+});
+
+// Mobile Sidebar Toggle Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileSidebar = document.getElementById('mobileSidebar');
+    
+    if (!menuToggle || !mobileSidebar) return;
+    
+    // Toggle mobile sidebar when menu button is clicked
+    menuToggle.addEventListener('click', function() {
+        mobileSidebar.classList.toggle('hidden');
+        
+        // Optional: Change the icon from bars to X when sidebar is open
+        const icon = menuToggle.querySelector('i');
+        if (icon) {
+            if (mobileSidebar.classList.contains('hidden')) {
+                icon.className = 'fas fa-bars';
+            } else {
+                icon.className = 'fas fa-times';
+            }
+        }
+    });
+    
+    // Optional: Close mobile sidebar when clicking on a menu item
+    const mobileMenuLinks = mobileSidebar.querySelectorAll('a');
+    mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            // Close the sidebar after clicking a menu item
+            mobileSidebar.classList.add('hidden');
+            
+            // Reset the icon back to bars
+            const icon = menuToggle.querySelector('i');
+            if (icon) icon.className = 'fas fa-bars';
+        });
+    });
+    
+    // Optional: Close mobile sidebar when clicking outside of it
+    document.addEventListener('click', function(event) {
+        const isClickInsideSidebar = mobileSidebar.contains(event.target);
+        const isClickOnToggle = menuToggle.contains(event.target);
+        
+        // If click is outside sidebar and not on the toggle button, close sidebar
+        if (!isClickInsideSidebar && !isClickOnToggle && !mobileSidebar.classList.contains('hidden')) {
+            mobileSidebar.classList.add('hidden');
+            
+            // Reset the icon back to bars
+            const icon = menuToggle.querySelector('i');
+            if (icon) icon.className = 'fas fa-bars';
+        }
+    });
+    
+    // Optional: Close mobile sidebar when window is resized to desktop size
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 768) { // md breakpoint in Tailwind
+            mobileSidebar.classList.add('hidden');
+            
+            // Reset the icon back to bars
+            const icon = menuToggle.querySelector('i');
+            if (icon) icon.className = 'fas fa-bars';
+        }
+    });
+});
+
+    </script>
+</body>
+</html>

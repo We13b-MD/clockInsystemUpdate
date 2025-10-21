@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time History | Employee Clock System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+   <!-- 1. jsPDF Core Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- 2. jsPDF AutoTable Plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+<!-- 3. CSV Export Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
+<!-- 4. Your custom export script -->
+<script src="path/to/your/export-script.js"></script>
+
+<!-- Your time history export script -->
+<script src="path/to/your/export-script.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="bg-blue-600 text-white px-6 py-4 flex justify-between items-center">
+                <h1 class="text-2xl font-bold">Time History</h1>
+                <a href="dashboard.html" class="bg-white text-blue-600 px-4 py-2 rounded hover:bg-gray-100 transition">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                </a>
+            </div>
+
+            <div class="p-6">
+                <!-- Personal Time History Section -->
+                <section class="mb-8">
+                    <h2 class="text-xl font-semibold mb-4">Your Personal Time History</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full bg-white">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="py-3 px-4 text-left">Date</th>
+                                    <th class="py-3 px-4 text-left">Clock In</th>
+                                    <th class="py-3 px-4 text-left">Clock Out</th>
+                                    <th class="py-3 px-4 text-left">Total Hours</th>
+                                    <th class="py-3 px-4 text-left">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="personalTimeHistoryTableBody">
+                                <!-- Dynamic content will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Company-wide Time History Section (for Admin/Management) -->
+                <section id="companyTimeHistorySection">
+                    <h2 class="text-xl font-semibold mb-4">Company Time History</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full bg-white">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="py-3 px-4 text-left">Employee</th>
+                                    <th class="py-3 px-4 text-left">Department</th>
+                                    <th class="py-3 px-4 text-left">Date</th>
+                                    <th class="py-3 px-4 text-left">Clock In</th>
+                                    <th class="py-3 px-4 text-left">Clock Out</th>
+                                    <th class="py-3 px-4 text-left">Total Hours</th>
+                                    <th class="py-3 px-4 text-left">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="companyTimeHistoryTableBody">
+                                <!-- Dynamic content will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Filtering and Export Options -->
+                <div class="mt-6 flex justify-between items-center">
+                    <div class="flex space-x-4">
+                        <select id="dateRangeFilter" class="px-3 py-2 border rounded">
+                            <option value="thisMonth">This Month</option>
+                            <option value="lastMonth">Last Month</option>
+                            <option value="last3Months">Last 3 Months</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                        <div id="customDateRange" class="hidden space-x-2">
+                            <input type="date" id="startDate" class="px-3 py-2 border rounded">
+                            <input type="date" id="endDate" class="px-3 py-2 border rounded">
+                        </div>
+                    </div>
+                    <div class="space-x-2">
+                        <button id="exportCSV" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                            <i class="fas fa-file-csv mr-2"></i>Export CSV
+                        </button>
+                        <button id="exportPDF" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                            <i class="fas fa-file-pdf mr-2"></i>Export PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="timehistory.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loggedInUser = sessionStorage.getItem('loggedInUser');
+    const userRole = sessionStorage.getItem('userRole');
+    
+    // Redirect to login if not logged in
+    if (!loggedInUser) {
+        window.location.href = 'form.html';
+        return;
+    }
+    
+    // Get all users from localStorage
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const currentUser = users.find(user => user.name === loggedInUser);
+    
+    // Get all clock records from localStorage
+    function getClockRecords() {
+        return JSON.parse(localStorage.getItem('clockRecords')) || [];
+    }
+
+    // Format time for display (12-hour format)
+    function formatTime(date) {
+        if (!date) return '--:-- --';
+        
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12;
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+        
+        return `${formattedHours}:${formattedMinutes} ${ampm}`;
+    }
+
+    // Calculate duration between two times
+    function calculateDuration(startTime, endTime) {
+        if (!startTime || !endTime) return '--';
+        
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+        const diffMs = end - start;
+        
+        const hours = Math.floor(diffMs / (1000 * 60 * 60));
+        const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        
+        return `${hours}h ${minutes}m`;
+    }
+
+    // Populate personal time history table
+    function populatePersonalTimeHistory(filteredRecords = null) {
+        const records = filteredRecords || 
+            getClockRecords().filter(record => 
+                record.employeeId === currentUser.employeeId
+            );
+        
+        // Sort records by date (newest first)
+        records.sort((a, b) => new Date(b.clockIn) - new Date(a.clockIn));
+        
+        // Clear existing rows
+        const tableBody = document.getElementById('personalTimeHistoryTableBody');
+        tableBody.innerHTML = '';
+        
+        records.forEach(record => {
+            const row = document.createElement('tr');
+            row.className = 'border-b';
+            
+            // Format date for display
+            const recordDate = new Date(record.date);
+            const dateFormatted = recordDate.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+            
+            const clockInTime = formatTime(new Date(record.clockIn));
+            const clockOutTime = record.clockOut ? formatTime(new Date(record.clockOut)) : '--:-- --';
+            const totalHours = record.clockOut ? 
+                calculateDuration(record.clockIn, record.clockOut) : 
+                'In Progress';
+            
+            const status = record.clockOut ? 
+                '<span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Complete</span>' : 
+                '<span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">In Progress</span>';
+            
+            row.innerHTML = `
+                <td class="py-3 px-4">${dateFormatted}</td>
+                <td class="py-3 px-4">${clockInTime}</td>
+                <td class="py-3 px-4">${clockOutTime}</td>
+                <td class="py-3 px-4">${totalHours}</td>
+                <td class="py-3 px-4">${status}</td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+        
+        // If no records, show a message
+        if (records.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td colspan="5" class="py-4 px-4 text-center text-gray-500">No time records found</td>
+            `;
+            tableBody.appendChild(row);
+        }
+    }
+
+    // Populate company-wide time history table
+    function populateCompanyTimeHistory(filteredRecords = null) {
+        // Only show this for admin or management roles
+        const userRoleType = currentUser.roleType || 'employee';
+        const companyTimeHistorySection = document.getElementById('companyTimeHistorySection');
+        
+        if (userRoleType.toLowerCase() !== 'admin' && userRoleType.toLowerCase() !== 'management') {
+            companyTimeHistorySection.style.display = 'none';
+            return;
+        }
+
+        const records = filteredRecords || getClockRecords();
+        const allUsers = JSON.parse(localStorage.getItem('users')) || [];
+        
+        // Sort records by date (newest first)
+        records.sort((a, b) => new Date(b.clockIn) - new Date(a.clockIn));
+        
+        // Clear existing rows
+        const tableBody = document.getElementById('companyTimeHistoryTableBody');
+        tableBody.innerHTML = '';
+        
+        records.forEach(record => {
+            const row = document.createElement('tr');
+            row.className = 'border-b';
+            
+            // Find user details
+            const employeeDetails = allUsers.find(user => user.employeeId === record.employeeId) || {};
+            
+            // Format date for display
+            const recordDate = new Date(record.date);
+            const dateFormatted = recordDate.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+            
+            const clockInTime = formatTime(new Date(record.clockIn));
+            const clockOutTime = record.clockOut ? formatTime(new Date(record.clockOut)) : '--:-- --';
+            const totalHours = record.clockOut ? 
+                calculateDuration(record.clockIn, record.clockOut) : 
+                'In Progress';
+            
+            const status = record.clockOut ? 
+                '<span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Complete</span>' : 
+                '<span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">In Progress</span>';
+            
+            row.innerHTML = `
+                <td class="py-3 px-4">${employeeDetails.name || record.employeeId}</td>
+                <td class="py-3 px-4">${employeeDetails.role || 'Not Specified'}</td>
+                <td class="py-3 px-4">${dateFormatted}</td>
+                <td class="py-3 px-4">${clockInTime}</td>
+                <td class="py-3 px-4">${clockOutTime}</td>
+                <td class="py-3 px-4">${totalHours}</td>
+                <td class="py-3 px-4">${status}</td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+        
+        // If no records, show a message
+        if (records.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td colspan="7" class="py-4 px-4 text-center text-gray-500">No time records found</td>
+            `;
+            tableBody.appendChild(row);
+        }
+    }
+
+    // Date Range Filtering
+    function setupDateRangeFiltering() {
+        const dateRangeFilter = document.getElementById('dateRangeFilter');
+        const customDateRange = document.getElementById('customDateRange');
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+
+        dateRangeFilter.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customDateRange.classList.remove('hidden');
+            } else {
+                customDateRange.classList.add('hidden');
+                filterTimeHistory(this.value);
+            }
+        });
+
+        // Event listeners for custom date range
+        startDateInput.addEventListener('change', () => filterTimeHistory('custom'));
+        endDateInput.addEventListener('change', () => filterTimeHistory('custom'));
+    }
+
+    // Filter time history based on selected date range
+    function filterTimeHistory(range) {
+        let filteredRecords = getClockRecords().filter(record => 
+            record.employeeId === currentUser.employeeId
+        );
+
+        const now = new Date();
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+
+        switch(range) {
+            case 'thisMonth':
+                filteredRecords = filteredRecords.filter(record => {
+                    const recordDate = new Date(record.date);
+                    return recordDate.getMonth() === now.getMonth() && 
+                           recordDate.getFullYear() === now.getFullYear();
+                });
+                break;
+            case 'lastMonth':
+                filteredRecords = filteredRecords.filter(record => {
+                    const recordDate = new Date(record.date);
+                    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+                    return recordDate >= lastMonth && recordDate <= lastMonthEnd;
+                });
+                break;
+            case 'last7Days':
+                filteredRecords = filteredRecords.filter(record => {
+                    const recordDate = new Date(record.date);
+                    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    return recordDate >= sevenDaysAgo && recordDate <= now;
+                });
+                break;
+            case 'last30Days':
+                filteredRecords = filteredRecords.filter(record => {
+                    const recordDate = new Date(record.date);
+                    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    return recordDate >= thirtyDaysAgo && recordDate <= now;
+                });
+                break;
+            case 'custom':
+                const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+                const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+
+                if (startDate && endDate) {
+                    // Set end date to end of the day
+                    endDate.setHours(23, 59, 59, 999);
+                    
+                    filteredRecords = filteredRecords.filter(record => {
+                        const recordDate = new Date(record.date);
+                        return recordDate >= startDate && recordDate <= endDate;
+                    });
+                }
+                break;
+        }
+
+        // Populate tables with filtered records
+        populatePersonalTimeHistory(filteredRecords);
+        
+        // Only populate company time history if user has admin/management role
+        const userRoleType = currentUser.roleType || 'employee';
+        if (userRoleType.toLowerCase() === 'admin' || userRoleType.toLowerCase() === 'management') {
+            populateCompanyTimeHistory(getClockRecords().filter(record => {
+                const recordDate = new Date(record.date);
+                switch(range) {
+                    case 'thisMonth':
+                        return recordDate.getMonth() === now.getMonth() && 
+                               recordDate.getFullYear() === now.getFullYear();
+                    case 'lastMonth':
+                        const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                        const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+                        return recordDate >= lastMonth && recordDate <= lastMonthEnd;
+                    case 'last7Days':
+                        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                        return recordDate >= sevenDaysAgo && recordDate <= now;
+                    case 'last30Days':
+                        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                        return recordDate >= thirtyDaysAgo && recordDate <= now;
+                    case 'custom':
+                        const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+                        const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+                        if (startDate && endDate) {
+                            endDate.setHours(23, 59, 59, 999);
+                            return recordDate >= startDate && recordDate <= endDate;
+                        }
+                        return true;
+                    default:
+                        return true;
+                }
+            }));
+        }
+    }
+
+    // Initial setup
+    function initializePage() {
+        // Set max date for date inputs to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('startDate').max = today;
+        document.getElementById('endDate').max = today;
+
+        // Populate initial time history
+        populatePersonalTimeHistory();
+        setupDateRangeFiltering();
+        
+        // Populate company time history if user has admin/management role
+        populateCompanyTimeHistory();
+
+        // Add logout functionality
+        const logoutButton = document.getElementById('logoutButton');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', function() {
+                // Clear session storage
+                sessionStorage.removeItem('loggedInUser');
+                sessionStorage.removeItem('userRole');
+                
+                // Redirect to login page
+                window.location.href = 'form.html';
+            });
+        }
+
+        // Welcome message
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        if (welcomeMessage) {
+            welcomeMessage.textContent = `Welcome, ${currentUser.name}`;
+        }
+    }
+
+    // Call initialization
+    initializePage();
+});
+
+//function for export pdf and csv
+
+// Export functionality for Time History
+
+// Export functionality for Time History
+
+// Export functionality for Time History
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure we have access to user information
+    const loggedInUser = sessionStorage.getItem('loggedInUser');
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const currentUser = users.find(user => user.name === loggedInUser);
+
+    // Utility functions (in case they're not defined from previous script)
+    function formatTime(date) {
+        if (!date) return '--:-- --';
+        
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12;
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+        
+        return `${formattedHours}:${formattedMinutes} ${ampm}`;
+    }
+
+    function calculateDuration(startTime, endTime) {
+        if (!startTime || !endTime) return '--';
+        
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+        const diffMs = end - start;
+        
+        const hours = Math.floor(diffMs / (1000 * 60 * 60));
+        const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        
+        return `${hours}h ${minutes}m`;
+    }
+
+    function getClockRecords() {
+        return JSON.parse(localStorage.getItem('clockRecords')) || [];
+    }
+
+    // CSV Export Function
+    function exportToCSV() {
+        // Sanity check for currentUser
+        if (!currentUser) {
+            alert('User information not found. Please log in again.');
+            return;
+        }
+
+        // Check for Papaparse library
+        if (typeof Papa === 'undefined') {
+            alert('CSV export library (Papaparse) is not loaded. Please include the library.');
+            return;
+        }
+
+        // Determine if we're exporting personal or company records
+        const userRoleType = currentUser.roleType || 'employee';
+        let records;
+        let headers;
+
+        if (userRoleType.toLowerCase() === 'admin' || userRoleType.toLowerCase() === 'management') {
+            // Company-wide records for admin/management
+            records = getClockRecords();
+            headers = [
+                'Employee ID', 
+                'Employee Name', 
+                'Role', 
+                'Date', 
+                'Clock In', 
+                'Clock Out', 
+                'Total Hours', 
+                'Status'
+            ];
+        } else {
+            // Personal records for employees
+            records = getClockRecords().filter(record => 
+                record.employeeId === currentUser.employeeId
+            );
+            headers = [
+                'Date', 
+                'Clock In', 
+                'Clock Out', 
+                'Total Hours', 
+                'Status'
+            ];
+        }
+
+        // Prepare data for CSV
+        const csvData = records.map(record => {
+            const recordDate = new Date(record.date);
+            const dateFormatted = recordDate.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+
+            const clockInTime = formatTime(new Date(record.clockIn));
+            const clockOutTime = record.clockOut ? formatTime(new Date(record.clockOut)) : 'N/A';
+            const totalHours = record.clockOut ? 
+                calculateDuration(record.clockIn, record.clockOut) : 
+                'In Progress';
+            
+            const status = record.clockOut ? 'Complete' : 'In Progress';
+
+            if (userRoleType.toLowerCase() === 'admin' || userRoleType.toLowerCase() === 'management') {
+                const employeeDetails = users.find(user => user.employeeId === record.employeeId) || {};
+                return [
+                    record.employeeId,
+                    employeeDetails.name || 'Unknown',
+                    employeeDetails.role || 'Not Specified',
+                    dateFormatted,
+                    clockInTime,
+                    clockOutTime,
+                    totalHours,
+                    status
+                ];
+            } else {
+                return [
+                    dateFormatted,
+                    clockInTime,
+                    clockOutTime,
+                    totalHours,
+                    status
+                ];
+            }
+        });
+
+        // Prepare CSV file
+        const csvContent = Papa.unparse({
+            fields: headers,
+            data: csvData
+        });
+
+        // Create and download CSV file
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        
+        link.setAttribute('href', url);
+        link.setAttribute('download', `time_history_${currentUser.name}_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // PDF Export Function
+    function exportToPDF() {
+        // Sanity check for currentUser
+        if (!currentUser) {
+            alert('User information not found. Please log in again.');
+            return;
+        }
+
+        // Check for PDF libraries
+        if (typeof jspdf === 'undefined') {
+            alert('PDF export library (jsPDF) is not loaded. Please include the library.');
+            return;
+        }
+
+        // Determine if we're exporting personal or company records
+        const userRoleType = currentUser.roleType || 'employee';
+        let records;
+        let headers;
+
+        if (userRoleType.toLowerCase() === 'admin' || userRoleType.toLowerCase() === 'management') {
+            // Company-wide records for admin/management
+            records = getClockRecords();
+            headers = [
+                'Employee ID', 
+                'Employee Name', 
+                'Role', 
+                'Date', 
+                'Clock In', 
+                'Clock Out', 
+                'Total Hours', 
+                'Status'
+            ];
+        } else {
+            // Personal records for employees
+            records = getClockRecords().filter(record => 
+                record.employeeId === currentUser.employeeId
+            );
+            headers = [
+                'Date', 
+                'Clock In', 
+                'Clock Out', 
+                'Total Hours', 
+                'Status'
+            ];
+        }
+
+        // Create a new jsPDF instance
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Add title
+        doc.setFontSize(18);
+        doc.text(`Time History for ${currentUser.name}`, 14, 22);
+
+        // Add current date
+        doc.setFontSize(10);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+
+        // Prepare table data
+        const tableData = records.map(record => {
+            const recordDate = new Date(record.date);
+            const dateFormatted = recordDate.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+
+            const clockInTime = formatTime(new Date(record.clockIn));
+            const clockOutTime = record.clockOut ? formatTime(new Date(record.clockOut)) : 'N/A';
+            const totalHours = record.clockOut ? 
+                calculateDuration(record.clockIn, record.clockOut) : 
+                'In Progress';
+            
+            const status = record.clockOut ? 'Complete' : 'In Progress';
+
+            if (userRoleType.toLowerCase() === 'admin' || userRoleType.toLowerCase() === 'management') {
+                const employeeDetails = users.find(user => user.employeeId === record.employeeId) || {};
+                return [
+                    record.employeeId,
+                    employeeDetails.name || 'Unknown',
+                    employeeDetails.role || 'Not Specified',
+                    dateFormatted,
+                    clockInTime,
+                    clockOutTime,
+                    totalHours,
+                    status
+                ];
+            } else {
+                return [
+                    dateFormatted,
+                    clockInTime,
+                    clockOutTime,
+                    totalHours,
+                    status
+                ];
+            }
+        });
+
+        // Add table to PDF using autoTable plugin
+        doc.autoTable({
+            head: [headers],
+            body: tableData,
+            startY: 40,
+            theme: 'striped',
+            styles: { 
+                fontSize: 8,
+                cellPadding: 3 
+            },
+            columnStyles: { 
+                // Adjust column widths if needed
+                0: { cellWidth: 'auto' },
+                1: { cellWidth: 'auto' }
+            }
+        });
+
+        // Save the PDF
+        doc.save(`time_history_${currentUser.name}_${new Date().toISOString().split('T')[0]}.pdf`);
+    }
+
+    // Add event listeners to export buttons
+    const exportCSVButton = document.getElementById('exportCSV');
+    const exportPDFButton = document.getElementById('exportPDF');
+
+    if (exportCSVButton) {
+        exportCSVButton.addEventListener('click', exportToCSV);
+    }
+
+    if (exportPDFButton) {
+        exportPDFButton.addEventListener('click', exportToPDF);
+    }
+});
+
+// Recommended HTML script inclusions (IMPORTANT: MUST BE IN THIS ORDER):
+// 1. jsPDF Library
+// <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+
+        
+    </script>
+</body>
+</html>

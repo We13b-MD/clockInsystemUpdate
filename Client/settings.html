@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Employee Clocking System</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
+    
+    <script type="text/javascript">
+        window.tailwind.config = {
+            darkMode: ['class'],
+            theme: {
+                extend: {
+                    colors: {
+                        border: 'hsl(var(--border))',
+                        input: 'hsl(var(--input))',
+                        ring: 'hsl(var(--ring))',
+                        background: 'hsl(var(--background))',
+                        foreground: 'hsl(var(--foreground))',
+                        primary: {
+                            DEFAULT: 'hsl(var(--primary))',
+                            foreground: 'hsl(var(--primary-foreground))'
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(var(--secondary))',
+                            foreground: 'hsl(var(--secondary-foreground))'
+                        },
+                        destructive: {
+                            DEFAULT: 'hsl(var(--destructive))',
+                            foreground: 'hsl(var(--destructive-foreground))'
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(var(--muted))',
+                            foreground: 'hsl(var(--muted-foreground))'
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(var(--accent))',
+                            foreground: 'hsl(var(--accent-foreground))'
+                        },
+                        popover: {
+                            DEFAULT: 'hsl(var(--popover))',
+                            foreground: 'hsl(var(--popover-foreground))'
+                        },
+                        card: {
+                            DEFAULT: 'hsl(var(--card))',
+                            foreground: 'hsl(var(--card-foreground))'
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --background: 0 0% 100%;
+                --foreground: 224 71.4% 4.1%;
+                --card: 0 0% 100%;
+                --card-foreground: 224 71.4% 4.1%;
+                --popover: 0 0% 100%;
+                --popover-foreground: 224 71.4% 4.1%;
+                --primary: 220.9 39.3% 11%;
+                --primary-foreground: 210 20% 98%;
+                --secondary: 220 14.3% 95.9%;
+                --secondary-foreground: 220.9 39.3% 11%;
+                --muted: 220 14.3% 95.9%;
+                --muted-foreground: 220 8.9% 46.1%;
+                --accent: 220 14.3% 95.9%;
+                --accent-foreground: 220.9 39.3% 11%;
+                --destructive: 0 84.2% 60.2%;
+                --destructive-foreground: 210 20% 98%;
+                --border: 220 13% 91%;
+                --input: 220 13% 91%;
+                --ring: 224 71.4% 4.1%;
+                --radius: 0.35rem;
+            }
+            .dark {
+                --background: 224 71.4% 4.1%;
+                --foreground: 210 20% 98%;
+                --card: 224 71.4% 4.1%;
+                --card-foreground: 210 20% 98%;
+                --popover: 224 71.4% 4.1%;
+                --popover-foreground: 210 20% 98%;
+                --primary: 210 20% 98%;
+                --primary-foreground: 220.9 39.3% 11%;
+                --secondary: 215 27.9% 16.9%;
+                --secondary-foreground: 210 20% 98%;
+                --muted: 215 27.9% 16.9%;
+                --muted-foreground: 217.9 10.6% 64.9%;
+                --accent: 215 27.9% 16.9%;
+                --accent-foreground: 210 20% 98%;
+                --destructive: 0 62.8% 30.6%;
+                --destructive-foreground: 210 20% 98%;
+                --border: 215 27.9% 16.9%;
+                --input: 215 27.9% 16.9%;
+                --ring: 216 12.2% 83.9%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Sidebar - Hidden on mobile, shown on tablet/desktop -->
+        <div class="bg-blue-900 text-white w-full md:w-64 md:flex-shrink-0 md:block hidden" id="sidebar">
+            <div class="p-4">
+                <h2 class="text-2xl font-bold mb-8">MikiClock</h2>
+                <nav>
+                    <ul>
+                          <li class="mb-2">
+                            <a href="home.html" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                               <i class="fas fa-home mr-3"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="dashboard.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                <i class="fas fa-tachometer-alt mr-3"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="admin.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                <i class="fas fa-users-cog mr-3"></i>
+                                <span>Admin Panel</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="timehistory.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                <i class="fas fa-history mr-3"></i>
+                                <span>Time History</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="forum.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                <i class="fas fa-comments mr-3"></i>
+                                <span>Forum</span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="settings.html" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                                <i class="fas fa-cog mr-3"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="mt-auto p-4 border-t border-blue-800">
+                <a href="form.html" id="logout-link" class="flex items-center p-2 rounded-md hover:bg-blue-700">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1">
+            <!-- Mobile Top Bar -->
+            <div class="bg-blue-900 text-white p-4 flex justify-between items-center md:hidden">
+                <h2 class="text-xl font-bold">MikiClock</h2>
+                <button id="menuToggle" class="text-white focus:outline-none">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Sidebar (Hidden by default) -->
+            <div class="bg-blue-900 text-white w-full hidden" id="mobileSidebar">
+                <div class="p-4">
+                    <nav>
+                        <ul>
+                              <li class="mb-2">
+                            <a href="home.html" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                            <i class="fas fa-home mr-3"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                            <li class="mb-2">
+                                <a href="dashboard.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-tachometer-alt mr-3"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="admin.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-users-cog mr-3"></i>
+                                    <span>Admin Panel</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="timehistory.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-history mr-3"></i>
+                                    <span>Time History</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="forum.html" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-comments mr-3"></i>
+                                    <span>Forum</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="settings.html" class="flex items-center p-3 rounded-md bg-blue-800 hover:bg-blue-700">
+                                    <i class="fas fa-cog mr-3"></i>
+                                    <span>Settings</span>
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="form.html" id="logout-link-mobile" class="flex items-center p-3 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-sign-out-alt mr-3"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-4 md:p-8">
+                <!-- Header with Current Time -->
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-800">Settings</h1>
+                    <div class="text-lg font-semibold" id="currentTime">
+                        <span id="currentDate"></span> | <span id="clock"></span>
+                    </div>
+                </div>
+
+                <!-- User Profile Section -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-user-circle mr-2 text-blue-900"></i> Profile Settings
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <!-- Profile Picture -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-blue-100 w-32 h-32 rounded-full flex items-center justify-center text-blue-800 text-4xl font-bold mb-4 overflow-hidden">
+                                <img id="profileImage" src="https://ui-avatars.com/api/?name=John+Doe&background=random" 
+                                     alt="Profile" class="w-full h-full object-cover">
+                            </div>
+                            <button id="changePhotoBtn" class="text-blue-900 hover:text-blue-700 text-sm font-medium">
+                                <i class="fas fa-camera mr-1"></i> Change Photo
+                            </button>
+                            <input type="file" id="profileUpload" class="hidden" accept="image/*">
+                        </div>
+                        
+                        <!-- Basic Info -->
+                        <div class="md:col-span-2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                    <input type="text" id="firstName" value="John" 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                    <input type="text" id="lastName" value="Doe" 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <input type="email" id="email" value="john.doe@example.com" 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                    <input type="text" id="role" value="employ"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button id="saveProfileBtn" class="bg-blue-900 text-white py-2 px-6 rounded-md hover:bg-blue-800 transition duration-300">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+
+              
+                            <div class="ml-3 flex-1">
+                                <h3 class="text-lg font-medium text-red-800 mb-2">Delete Account</h3>
+                                <p class="text-sm text-red-700 mb-4">
+                                    Permanently delete your account and all associated data. This action cannot be undone.
+                                </p>
+                                <button id="deleteAccountBtn" class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition duration-300 text-sm font-medium">
+                                    <i class="fas fa-trash-alt mr-2"></i>Delete Account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Mobile menu toggle script
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            mobileSidebar.classList.toggle('hidden');
+        });
+    
+        // Display current time and date
+        function updateClock() {
+            const now = new Date();
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+                    
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', dateOptions);
+            document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', timeOptions);
+        }
+    
+        // Update clock every second
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        
+        
+
+      /*  document.addEventListener('DOMContentLoaded', function() {
+    // Update current time
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+    
+    // Load current user data
+    loadUserProfile();
+    
+    // Event listeners
+    document.getElementById('changePhotoBtn').addEventListener('click', function() {
+        document.getElementById('profileUpload').click();
+    });
+    
+    document.getElementById('profileUpload').addEventListener('change', handleProfilePhotoUpload);
+    document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
+    document.getElementById('deleteAccountBtn').addEventListener('click', deleteAccount);
+});
+
+// Function to update date and time
+function updateDateTime() {
+    const now = new Date();
+    const dateOptions = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    const timeOptions = { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+        hour12: true 
+    };
+    
+    const currentDate = now.toLocaleDateString('en-US', dateOptions);
+    const currentTime = now.toLocaleTimeString('en-US', timeOptions);
+    
+    document.getElementById('currentDate').textContent = currentDate;
+    document.getElementById('clock').textContent = currentTime;
+}
+
+// Function to load current user profile data
+function loadUserProfile() {
+    const currentUser = sessionStorage.getItem('loggedInUser');
+    
+    if (!currentUser) {
+        // No user logged in, redirect to login
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // Get users from localStorage
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(u => u.name.toLowerCase() === currentUser.toLowerCase());
+    
+    if (user) {
+        // Populate form fields with current user data
+        document.getElementById('firstName').value = user.firstName || user.name.split(' ')[0] || '';
+        document.getElementById('lastName').value = user.lastName || user.name.split(' ')[1] || '';
+        document.getElementById('email').value = user.email || '';
+        document.getElementById('role').value = user.role || 'employee';
+        
+        // Set profile image if exists
+        if (user.profileImage) {
+            document.getElementById('profileImage').src = user.profileImage;
+        } else {
+            // Generate avatar with user's name
+            const fullName = `${user.firstName || user.name} ${user.lastName || ''}`.trim();
+            document.getElementById('profileImage').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=random`;
+        }
+    }
+}
+
+// Function to handle profile photo upload
+function handleProfilePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            swal({
+                title: "Error",
+                text: "Please select a valid image file",
+                icon: "error"
+            });
+            return;
+        }
+        
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            swal({
+                title: "Error",
+                text: "File size must be less than 5MB",
+                icon: "error"
+            });
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('profileImage').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Function to save profile changes
+async function saveProfile() {
+    const currentUser = sessionStorage.getItem('loggedInUser');
+    
+    if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // Get form values
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const role = document.getElementById('role').value.trim();
+    const profileImage = document.getElementById('profileImage').src;
+    
+    // Validate required fields
+    if (!firstName) {
+        swal({
+            title: "Error",
+            text: "First name is required",
+            icon: "error"
+        });
+        return;
+    }
+    
+    if (email && !isValidEmail(email)) {
+        swal({
+            title: "Error",
+            text: "Please enter a valid email address",
+            icon: "error"
+        });
+        return;
+    }
+    
+    try {
+        // Get users from localStorage
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const userIndex = users.findIndex(u => u.name.toLowerCase() === currentUser.toLowerCase());
+        
+        if (userIndex === -1) {
+            throw new Error('User not found');
+        }
+        
+        // Create new user name from first and last name
+        const newUserName = `${firstName} ${lastName}`.trim();
+        const oldPassword = users[userIndex].password; // Keep the same password
+        
+        // Update user data
+        users[userIndex] = {
+            ...users[userIndex],
+            name: newUserName,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            role: role,
+            profileImage: profileImage.startsWith('data:') ? profileImage : null,
+            lastUpdated: new Date().toISOString()
+        };
+        
+        // Save to localStorage
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        // Update session storage with new name
+        sessionStorage.setItem('loggedInUser', newUserName);
+        
+        // Save to SQLite database
+        //await updateUserInSQLite(currentUser, newUserName, oldPassword, users[userIndex]);
+        
+        // Show success message
+        swal({
+            title: "Success!",
+            text: "Profile updated successfully!",
+            icon: "success"
+        }).then(() => {
+            // Reload the page to reflect changes
+            location.reload();
+        });
+        
+    } catch (error) {
+        console.error('Error saving profile:', error);
+        swal({
+            title: "Error",
+            text: "Failed to update profile. Please try again.",
+            icon: "error"
+        });
+    }
+}
+
+// Function to validate email
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Function to update user in SQLite
+/*async function updateUserInSQLite(oldName, newName, password, userData) {
+    try {
+        const response = await fetch('http://localhost:3000/api/update-user', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                oldName: oldName,
+                newName: newName,
+                password: password,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                email: userData.email,
+                role: userData.role,
+                profileImage: userData.profileImage,
+                lastUpdated: userData.lastUpdated
+            })
+        });
+        
+        const result = await response.json();
+        console.log('User updated in SQLite:', result);
+    } catch (error) {
+        console.error('Error updating user in SQLite:', error);
+        // Don't throw error here as localStorage update was successful
+    }
+}
+
+// Function to delete account
+function deleteAccount() {
+    swal({
+        title: "Are you sure?",
+        text: "This will permanently delete your account and all associated data. This action cannot be undone!",
+        icon: "warning",
+        buttons: {
+            cancel: {
+                text: "Cancel",
+                value: false,
+                visible: true,
+                className: "btn-cancel"
+            },
+            confirm: {
+                text: "Delete Account",
+                value: true,
+                visible: true,
+                className: "btn-danger"
+            }
+        },
+        dangerMode: true,
+    }).then(async (willDelete) => {
+        if (willDelete) {
+            try {
+                const currentUser = sessionStorage.getItem('loggedInUser');
+                
+                if (!currentUser) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                // Remove user from localStorage
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const filteredUsers = users.filter(u => u.name.toLowerCase() !== currentUser.toLowerCase());
+                localStorage.setItem('users', JSON.stringify(filteredUsers));
+                
+                // Delete from SQLite
+                await deleteUserFromSQLite(currentUser);
+                
+                // Clear session storage
+                sessionStorage.clear();
+                
+                swal({
+                    title: "Account Deleted",
+                    text: "Your account has been permanently deleted.",
+                    icon: "success"
+                }).then(() => {
+                    // Redirect to login page
+                    window.location.href = 'login.html';
+                });
+                
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                swal({
+                    title: "Error",
+                    text: "Failed to delete account. Please try again.",
+                    icon: "error"
+                });
+            }
+        }
+    });
+}
+
+// Function to delete user from SQLite
+/*async function deleteUserFromSQLite(userName) {
+    try {
+        const response = await fetch('http://localhost:3000/api/delete-user', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: userName
+            })
+        });
+        
+        const result = await response.json();
+        console.log('User deleted from SQLite:', result);
+    } catch (error) {
+        console.error('Error deleting user from SQLite:', error);
+        // Don't throw error here as localStorage deletion was successful
+    }
+}
+
+// Function to hash password (same as login)
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    
+    const salt = "YourSecureSalt";
+    const saltedPassword = password + salt;
+    const saltedData = encoder.encode(saltedPassword);
+    
+    const hashBuffer = await crypto.subtle.digest('SHA-256', saltedData);
+    
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    
+    return hashedPassword;
+}*/
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Update current time
+
+   
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+    
+    // Load current user data
+    loadUserProfile();
+    
+    // Event listeners using proper function binding
+    const changePhotoBtn = document.getElementById('changePhotoBtn');
+    const profileUpload = document.getElementById('profileUpload');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+    
+    if (changePhotoBtn) {
+        changePhotoBtn.onclick = function() {
+            document.getElementById('profileUpload').click();
+        };
+    }
+    
+    if (profileUpload) {
+        profileUpload.onchange = handleProfilePhotoUpload;
+    }
+    
+    if (saveProfileBtn) {
+        saveProfileBtn.onclick = function() {
+            handleSaveProfile();
+        };
+    }
+    
+    if (deleteAccountBtn) {
+        deleteAccountBtn.onclick = handleDeleteAccount;
+    }
+});
+
+// Function to update date and time
+function updateDateTime() {
+    const now = new Date();
+    const dateOptions = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    const timeOptions = { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+        hour12: true 
+    };
+    
+    const currentDate = now.toLocaleDateString('en-US', dateOptions);
+    const currentTime = now.toLocaleTimeString('en-US', timeOptions);
+    
+    const dateElement = document.getElementById('currentDate');
+    const clockElement = document.getElementById('clock');
+    
+    if (dateElement) dateElement.textContent = currentDate;
+    if (clockElement) clockElement.textContent = currentTime;
+}
+
+// Function to load current user profile data
+function loadUserProfile() {
+    const currentUser = sessionStorage.getItem('loggedInUser');
+    
+    if (!currentUser) {
+        // No user logged in, redirect to login
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // Get users from localStorage
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(function(u) { 
+        return u.name.toLowerCase() === currentUser.toLowerCase(); 
+    });
+    
+    if (user) {
+        // Populate form fields with current user data
+        const firstNameEl = document.getElementById('firstName');
+        const lastNameEl = document.getElementById('lastName');
+        const emailEl = document.getElementById('email');
+        const roleEl = document.getElementById('role');
+        const profileImageEl = document.getElementById('profileImage');
+        
+        if (firstNameEl) firstNameEl.value = user.firstName || user.name.split(' ')[0] || '';
+        if (lastNameEl) lastNameEl.value = user.lastName || user.name.split(' ')[1] || '';
+        if (emailEl) emailEl.value = user.email || '';
+        if (roleEl) roleEl.value = user.role || 'employee';
+        
+        // Set profile image if exists
+        if (profileImageEl) {
+            if (user.profileImage) {
+                profileImageEl.src = user.profileImage;
+            } else {
+                // Generate avatar with user's name
+                const fullName = (user.firstName || user.name) + ' ' + (user.lastName || '');
+                profileImageEl.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName.trim()) + '&background=random';
+            }
+        }
+    }
+}
+
+// Function to handle profile photo upload
+function handleProfilePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Error: Please select a valid image file');
+            return;
+        }
+        
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Error: File size must be less than 5MB');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const profileImageEl = document.getElementById('profileImage');
+            if (profileImageEl) {
+                profileImageEl.src = e.target.result;
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Function to handle save profile button click
+function handleSaveProfile() {
+    const currentUser = sessionStorage.getItem('loggedInUser');
+    
+    if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // Get form values
+    const firstNameEl = document.getElementById('firstName');
+    const lastNameEl = document.getElementById('lastName');
+    const emailEl = document.getElementById('email');
+    const roleEl = document.getElementById('role');
+    const profileImageEl = document.getElementById('profileImage');
+    
+    const firstName = firstNameEl ? firstNameEl.value.trim() : '';
+    const lastName = lastNameEl ? lastNameEl.value.trim() : '';
+    const email = emailEl ? emailEl.value.trim() : '';
+    const role = roleEl ? roleEl.value.trim() : '';
+    const profileImage = profileImageEl ? profileImageEl.src : '';
+    
+    // Validate required fields
+    if (!firstName) {
+        alert('Error: First name is required');
+        return;
+    }
+    
+    if (email && !isValidEmail(email)) {
+        alert('Error: Please enter a valid email address');
+        return;
+    }
+    
+    // Call save function
+    saveProfileData(currentUser, firstName, lastName, email, role, profileImage);
+}
+
+// Function to save profile data
+function saveProfileData(currentUser, firstName, lastName, email, role, profileImage) {
+    try {
+        // Get users from localStorage
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const userIndex = users.findIndex(function(u) {
+            return u.name.toLowerCase() === currentUser.toLowerCase();
+        });
+        
+        if (userIndex === -1) {
+            throw new Error('User not found');
+        }
+        
+        // Create new user name from first and last name
+        const newUserName = (firstName + ' ' + lastName).trim();
+        const oldPassword = users[userIndex].password; // Keep the same password
+        
+        // Update user data
+        users[userIndex] = {
+            name: newUserName,
+            password: oldPassword,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            role: role,
+            profileImage: profileImage.startsWith('data:') ? profileImage : null,
+            lastUpdated: new Date().toISOString(),
+            createdAt: users[userIndex].createdAt || new Date().toISOString()
+        };
+        
+        // Save to localStorage and update session
+        localStorage.setItem('users', JSON.stringify(users));
+        sessionStorage.setItem('loggedInUser', newUserName);
+        
+        // Show success message
+        alert('Success: Profile updated successfully!');
+        // Reload the page to reflect changes
+        location.reload();
+        
+    } catch (error) {
+        console.error('Error saving profile:', error);
+        alert('Error: Failed to update profile. Please try again.');
+    }
+}
+
+// Function to update user in database
+function updateUserInDatabase(oldName, newName, password, userData) {
+    // Use XMLHttpRequest instead of fetch to avoid potential issues
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', 'http://localhost:3000/api/update-user', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                console.log('User updated in database:', JSON.parse(xhr.responseText));
+            } else {
+                console.error('Error updating user in database:', xhr.responseText);
+            }
+        }
+    };
+    
+    const data = JSON.stringify({
+        oldName: oldName,
+        newName: newName,
+        password: password,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        role: userData.role,
+        profileImage: userData.profileImage,
+        lastUpdated: userData.lastUpdated
+    });
+    
+    xhr.send(data);
+}
+
+// Function to handle delete account
+function handleDeleteAccount() {
+    const confirmDelete = confirm('Are you sure you want to delete your account? This action cannot be undone!');
+    
+    if (confirmDelete) {
+        const currentUser = sessionStorage.getItem('loggedInUser');
+        
+        if (!currentUser) {
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        try {
+            // Remove user from localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const filteredUsers = users.filter(function(u) {
+                return u.name.toLowerCase() !== currentUser.toLowerCase();
+            });
+            localStorage.setItem('users', JSON.stringify(filteredUsers));
+            
+            // Clear session storage
+            sessionStorage.clear();
+            
+            alert('Account Deleted: Your account has been permanently deleted.');
+            // Redirect to login page
+            window.location.href = 'form.html';
+            
+        } catch (error) {
+            console.error('Error deleting account:', error);
+            alert('Error: Failed to delete account. Please try again.');
+        }
+    }
+}
+
+// Function to delete user from database
+function deleteUserFromDatabase(userName) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('DELETE', 'http://localhost:3000/api/delete-user', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                console.log('User deleted from database:', JSON.parse(xhr.responseText));
+            } else {
+                console.error('Error deleting user from database:', xhr.responseText);
+            }
+        }
+    };
+    
+    xhr.send(JSON.stringify({ name: userName }));
+}
+
+// Function to validate email
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+        
+        </script>
+</body>
+</html>
